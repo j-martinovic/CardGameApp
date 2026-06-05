@@ -6,21 +6,24 @@ import LoginScreen from './Login'
 
 function App() {
   const [state, setState] = useState("home")
+  const [signUp, setSignUp] = useState(false)
 
-  const launchLogin = () => {
-    if (state !== "loggingIn") {
-      setState("loggingIn")
-    }
+  const launchLogin = (signUp) => {
+    setState("loggingIn")
+    setSignUp(signUp)
   }
 
   const closeLogin = () => {
     setState("home")
   }
  
+  const returnHome = () => {
+    setState("home")
+  }
 
   return (
     <>
-      {state === "loggingIn" ? <LoginScreen /> : <HomeScreen />}
+      {state === "loggingIn" ? <LoginScreen returnHome={returnHome} signUp={signUp} /> : <HomeScreen openLogin={launchLogin} />}
     </>
   )
 }

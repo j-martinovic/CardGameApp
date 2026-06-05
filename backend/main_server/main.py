@@ -2,11 +2,26 @@ from flask import request, jsonify
 from config import app, db
 from models import User
 
-@app.route("/get_users", methods=["GET"])
-def get_users():
-    users = User.query.all()
-    json_users = list(map(lambda x: x.to_json(), users))
-    return jsonify({"users": json_users})
+
+@app.route("/login", methods=["POST"])
+def login():
+    userName = request.json.get("userName", "")
+    password = request.json.get("password", "")
+
+    if userName == "":
+        return jsonify({"message": "You must include a user name"}), 400
+    elif password == "":
+        return jsonify({"message": "You must include a password"}), 400
+
+    user = User.query.filter_by(user_name=userName).first()
+
+    if not user or user.password != password:
+        return jsonify({"message": "Invalid credentials"}), 401
+
+    user.logged_in = True
+    db.session.commit()
+
+    return jsonify({"message": "Login successful"}), 200
 
 
 @app.route("/signup", methods=["POST"])
@@ -41,6 +56,14 @@ def create_user():
         return jsonify({"message": str(e)}), 400
         
     return jsonify({"message": "User created!"}), 201
+
+
+
+@app.route("/get_users", methods=["GET"])
+def get_users():
+    users = User.query.all()
+    json_users = list(map(lambda x: x.to_json(), users))
+    return jsonify({"users": json_users})
 
 
 @app.route("/update_user/<int:user_id>",methods=["PATCH"])

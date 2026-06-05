@@ -3,7 +3,7 @@ import './Home.css'
 
 
 
-const HomeScreen = (openLogin) => {
+const HomeScreen = ({openLogin}) => {
     return (
         <div className="home-screen">
             <h1>Welcome to the Card Game App!</h1>
@@ -12,7 +12,10 @@ const HomeScreen = (openLogin) => {
                 <img src="/Logo1.png" alt="Card Game Logo" className="home-logo" />
             </div>
             <div className="login-button">
-                <button onClick={() => openLogin}>Login</button>
+                <button onClick={() => openLogin(false)}>Login</button>
+            </div>
+            <div className="login-button">
+                <button onClick={() => openLogin(true)}>Sign Up</button>
             </div>
         </div>
     )
