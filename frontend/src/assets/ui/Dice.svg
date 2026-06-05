@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <!-- Dice body with slight 3D tilt illusion -->
+  <!-- Top face (lighter) -->
+  <polygon points="15,15 65,15 72,8 22,8" fill="#f0ece0" stroke="#8b7140" stroke-width="1.2"/>
+  <!-- Right face (medium) -->
+  <polygon points="65,15 72,8 72,58 65,65" fill="#d4c89a" stroke="#8b7140" stroke-width="1.2"/>
+  <!-- Front face (main) -->
+  <rect x="15" y="15" width="50" height="50" rx="8" ry="8" fill="#f5f0e0" stroke="#8b7140" stroke-width="1.5"/>
+  <!-- Face value: 6 dots (2 columns of 3) -->
+  <circle cx="27" cy="26" r="4.5" fill="#1a1a1a"/>
+  <circle cx="53" cy="26" r="4.5" fill="#1a1a1a"/>
+  <circle cx="27" cy="40" r="4.5" fill="#1a1a1a"/>
+  <circle cx="53" cy="40" r="4.5" fill="#1a1a1a"/>
+  <circle cx="27" cy="54" r="4.5" fill="#1a1a1a"/>
+  <circle cx="53" cy="54" r="4.5" fill="#1a1a1a"/>
+  <!-- Rounded corner highlight -->
+  <rect x="15" y="15" width="50" height="50" rx="8" ry="8"
+    fill="none" stroke="#fff" stroke-width="1" opacity="0.3"/>
+</svg>

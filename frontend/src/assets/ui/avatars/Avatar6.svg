@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <!-- Avatar 6: Spiky hair, sunglasses, cool -->
+  <!-- Spiky hair -->
+  <polygon points="40,5 37,22 34,8 31,24 26,10 25,26 20,14 22,28" fill="#1a1a1a"/>
+  <polygon points="40,5 43,22 46,8 49,24 54,10 55,26 60,14 58,28" fill="#1a1a1a"/>
+  <!-- Face -->
+  <circle cx="40" cy="52" r="23" fill="#c8884a"/>
+  <!-- Sunglasses (one-piece bar style) -->
+  <rect x="19" y="44" width="42" height="12" rx="6" ry="6" fill="#1a1a1a"/>
+  <rect x="20" y="45" width="40" height="5" rx="3" ry="3" fill="#333" opacity="0.6"/>
+  <!-- Glint on glasses -->
+  <ellipse cx="30" cy="47" rx="5" ry="2.5" fill="white" opacity="0.25" transform="rotate(-15 30 47)"/>
+  <!-- Nose (below glasses) -->
+  <ellipse cx="40" cy="58" rx="3.5" ry="2.5" fill="#a06030" opacity="0.6"/>
+  <!-- Cool smirk -->
+  <path d="M34,64 Q40,70 48,64" fill="none" stroke="#5c3010" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Tooth/smirk detail -->
+  <line x1="40" y1="64" x2="40" y2="66" stroke="#fff" stroke-width="2"/>
+  <!-- Cheeks -->
+  <ellipse cx="28" cy="60" rx="6" ry="3.5" fill="#d06040" opacity="0.3"/>
+  <ellipse cx="52" cy="60" rx="6" ry="3.5" fill="#d06040" opacity="0.3"/>
+</svg>

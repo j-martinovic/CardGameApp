@@ -2,6 +2,10 @@ import { useState } from 'react'
 import './App.css'
 import HomeScreen from './Home'
 import LoginScreen from './Login'
+// NOTE: A visual asset gallery exists at ./components/AssetPreview.jsx
+// To view all card/chip/avatar/table SVGs and animation demos, temporarily
+// replace the JSX return below with: <AssetPreview />
+// See frontend/README_ASSETS.md for full documentation.
 
 
 function App() {
