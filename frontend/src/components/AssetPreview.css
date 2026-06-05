@@ -1,0 +1,166 @@
+/**
+ * AssetPreview.css
+ * Styles for the AssetPreview gallery component.
+ * Retro/vintage theme with warm tones and cartoonish personality.
+ * Google Font 'Luckiest Guy' is loaded via @import below.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rye&display=swap');
+
+/* ─── Page layout ─────────────────────────────────────────────────────────── */
+
+.asset-preview {
+  background-color: #2a1a08;
+  background-image:
+    radial-gradient(ellipse at center, #3a2510 0%, #1a0e04 100%);
+  min-height: 100vh;
+  padding: 32px 24px 60px;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #f0dbb0;
+}
+
+.asset-preview__title {
+  font-family: 'Luckiest Guy', 'Rye', cursive, sans-serif;
+  font-size: 2.8rem;
+  color: #f5d080;
+  text-align: center;
+  letter-spacing: 3px;
+  text-shadow: 3px 3px 0 #8b4513, 5px 5px 8px rgba(0,0,0,0.6);
+  margin: 0 0 8px;
+}
+
+.asset-preview__subtitle {
+  text-align: center;
+  color: #c8a96e;
+  font-size: 0.95rem;
+  margin: 0 0 36px;
+  letter-spacing: 1px;
+  font-style: italic;
+}
+
+/* ─── Section layout ──────────────────────────────────────────────────────── */
+
+.asset-section {
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(200, 169, 110, 0.25);
+  border-radius: 10px;
+  padding: 20px 24px;
+}
+
+.asset-section__heading {
+  font-family: 'Luckiest Guy', 'Rye', cursive, sans-serif;
+  font-size: 1.3rem;
+  color: #f5d080;
+  letter-spacing: 2px;
+  margin: 0 0 6px;
+  text-shadow: 1px 1px 0 #8b4513;
+}
+
+.asset-section__desc {
+  font-size: 0.82rem;
+  color: #a08858;
+  margin: 0 0 16px;
+  font-style: italic;
+}
+
+.asset-section__code {
+  display: block;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(200, 169, 110, 0.2);
+  border-radius: 5px;
+  padding: 6px 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  color: #c8e8a0;
+  margin-bottom: 16px;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* ─── Item grids ──────────────────────────────────────────────────────────── */
+
+.asset-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.asset-grid--cards {
+  gap: 6px;
+}
+
+.asset-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.asset-item__label {
+  font-size: 0.72rem;
+  color: #a08858;
+  text-align: center;
+  max-width: 90px;
+}
+
+/* ─── Table felt preview box ─────────────────────────────────────────────── */
+
+.felt-preview {
+  width: 100%;
+  max-width: 600px;
+  height: 180px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 3px solid #8b6020;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.felt-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ─── Animation demo box ─────────────────────────────────────────────────── */
+
+.animation-demo {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.animation-demo__btn {
+  background: #8b4513;
+  color: #f5d080;
+  border: 2px solid #c8922a;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-family: Georgia, serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.animation-demo__btn:hover {
+  background: #a0541a;
+}
+
+/* ─── Card face scroll row ───────────────────────────────────────────────── */
+
+.card-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.card-row::-webkit-scrollbar {
+  height: 5px;
+}
+.card-row::-webkit-scrollbar-thumb {
+  background: #8b7140;
+  border-radius: 3px;
+}

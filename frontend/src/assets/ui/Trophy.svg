@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="90" viewBox="0 0 80 90">
+  <!-- Trophy cup body -->
+  <path d="M20,10 L60,10 L55,45 Q50,60 40,62 Q30,60 25,45 Z"
+    fill="#f0c040" stroke="#c8922a" stroke-width="1.5"/>
+  <!-- Handles -->
+  <path d="M20,15 Q8,15 8,28 Q8,40 20,40" fill="none" stroke="#c8922a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M60,15 Q72,15 72,28 Q72,40 60,40" fill="none" stroke="#c8922a" stroke-width="4" stroke-linecap="round"/>
+  <!-- Stem -->
+  <rect x="35" y="62" width="10" height="14" fill="#c8922a"/>
+  <!-- Base plate -->
+  <rect x="22" y="76" width="36" height="8" rx="3" ry="3" fill="#a07020" stroke="#c8922a" stroke-width="1"/>
+  <!-- Shine lines -->
+  <line x1="30" y1="15" x2="28" y2="42" stroke="#fff8c0" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <line x1="37" y1="12" x2="35" y2="50" stroke="#fff8c0" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  <!-- Star on cup -->
+  <polygon points="40,22 42,28 48,28 43,32 45,38 40,34 35,38 37,32 32,28 38,28"
+    fill="#fff8c0" opacity="0.85"/>
+</svg>
