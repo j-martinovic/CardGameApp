@@ -13,7 +13,7 @@ class User(db.Model):
             "userName": self.user_name,
             "password": self.password,
             "email": self.email,
-            "logged_in": self.logged_in
+            "loggedIn": self.logged_in
         }
     
 

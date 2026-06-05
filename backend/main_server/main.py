@@ -3,6 +3,24 @@ from config import app, db
 from models import User
 
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    id = request.json.get("id")
+
+    if not id:
+        return jsonify({"message": "You must include a user ID"}), 400
+
+    user = User.query.get(id)
+
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    user.logged_in = False
+    db.session.commit()
+
+    return jsonify({"message": "Logout successful"}), 200
+
+
 @app.route("/login", methods=["POST"])
 def login():
     userName = request.json.get("userName", "")
@@ -21,7 +39,7 @@ def login():
     user.logged_in = True
     db.session.commit()
 
-    return jsonify({"message": "Login successful"}), 200
+    return jsonify({"message": "Login successful", "user": user.to_json()}), 200
 
 
 @app.route("/signup", methods=["POST"])
@@ -46,7 +64,7 @@ def create_user():
             400,
         )
     
-    new_user = User(user_name=user_name,password=password,email=email)
+    new_user = User(user_name=user_name,password=password,email=email,logged_in=True)
     
     try:
         db.session.add(new_user)
@@ -55,15 +73,26 @@ def create_user():
     except Exception as e:
         return jsonify({"message": str(e)}), 400
         
-    return jsonify({"message": "User created!"}), 201
+    return jsonify({"message": "User created!", "user": new_user.to_json()}), 201
 
 
 
-@app.route("/get_users", methods=["GET"])
-def get_users():
-    users = User.query.all()
-    json_users = list(map(lambda x: x.to_json(), users))
-    return jsonify({"users": json_users})
+
+
+# @app.route("/get_user/<string:email>", methods=["GET"])
+# def get_user(email):
+#     user = User.query.filter_by(email=email).first()
+#     if not user:
+#         return jsonify({"message": "User not found"}), 404
+#     return jsonify({"user": user.to_json()}), 200
+
+
+
+# @app.route("/get_users", methods=["GET"])
+# def get_users():
+#     users = User.query.all()
+#     json_users = list(map(lambda x: x.to_json(), users))
+#     return jsonify({"users": json_users})
 
 
 @app.route("/update_user/<int:user_id>",methods=["PATCH"])
