@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <!-- Avatar 3: Bandana, pirate-style -->
+  <!-- Bandana -->
+  <ellipse cx="40" cy="22" rx="23" ry="16" fill="#8b1a1a"/>
+  <path d="M17,22 Q40,35 63,22 Q40,14 17,22" fill="#a52020"/>
+  <!-- Bandana knot (back) -->
+  <path d="M60,18 Q68,12 66,22 Q68,28 60,24" fill="#8b1a1a"/>
+  <!-- Polka dots on bandana -->
+  <circle cx="30" cy="18" r="2.5" fill="#c0392b" opacity="0.5"/>
+  <circle cx="42" cy="15" r="2.5" fill="#c0392b" opacity="0.5"/>
+  <circle cx="54" cy="19" r="2.5" fill="#c0392b" opacity="0.5"/>
+  <!-- Face -->
+  <circle cx="40" cy="52" r="22" fill="#e8c070"/>
+  <!-- Eyes -->
+  <ellipse cx="32" cy="48" rx="4" ry="4.5" fill="white"/>
+  <circle cx="33" cy="49" r="2.5" fill="#2a1a0a"/>
+  <!-- Eyepatch on right -->
+  <ellipse cx="48" cy="48" rx="7" ry="6" fill="#1a1a1a"/>
+  <line x1="41" y1="45" x2="55" y2="45" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- Eyebrow -->
+  <path d="M29,42 Q32,40 35,42" fill="none" stroke="#5c3c10" stroke-width="2" stroke-linecap="round"/>
+  <!-- Nose -->
+  <ellipse cx="40" cy="53" rx="3" ry="2" fill="#c8922a" opacity="0.6"/>
+  <!-- Grin (slightly smug) -->
+  <path d="M34,60 Q40,66 48,60" fill="none" stroke="#8b4513" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <ellipse cx="29" cy="56" rx="5" ry="3" fill="#d06040" opacity="0.3"/>
+  <ellipse cx="52" cy="56" rx="5" ry="3" fill="#d06040" opacity="0.3"/>
+  <!-- Scar on cheek -->
+  <line x1="53" y1="53" x2="57" y2="60" stroke="#a07040" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

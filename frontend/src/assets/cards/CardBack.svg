@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="140" viewBox="0 0 100 140">
+  <defs>
+    <!-- Diamond crosshatch fill for vintage look -->
+    <pattern id="back-diamonds" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45 50 70)">
+      <rect width="14" height="14" fill="#8b1a1a"/>
+      <rect x="1" y="1" width="12" height="12" fill="#a52020" rx="1"/>
+    </pattern>
+    <pattern id="back-dots" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="none"/>
+      <circle cx="3.5" cy="3.5" r="1" fill="#c0392b" opacity="0.35"/>
+    </pattern>
+  </defs>
+
+  <!-- Card body with rounded corners -->
+  <rect x="2" y="2" width="96" height="136" rx="7" ry="7" fill="#f5e6c8" stroke="#c8a96e" stroke-width="1.5"/>
+
+  <!-- Aged background fill -->
+  <rect x="4" y="4" width="92" height="132" rx="5" ry="5" fill="#f0dbb0"/>
+
+  <!-- Diamond pattern area (inner inset) -->
+  <rect x="8" y="8" width="84" height="124" rx="4" ry="4" fill="url(#back-diamonds)"/>
+
+  <!-- Dot overlay on diamond pattern -->
+  <rect x="8" y="8" width="84" height="124" rx="4" ry="4" fill="url(#back-dots)"/>
+
+  <!-- Ornate border frame -->
+  <rect x="8" y="8" width="84" height="124" rx="4" ry="4"
+    fill="none" stroke="#f5d080" stroke-width="1.5"/>
+  <rect x="11" y="11" width="78" height="118" rx="3" ry="3"
+    fill="none" stroke="#e8b84b" stroke-width="0.75" stroke-dasharray="3,2"/>
+
+  <!-- Corner ornaments (top-left, top-right, bottom-left, bottom-right) -->
+  <!-- Top-left -->
+  <path d="M14,14 Q14,20 20,14" fill="none" stroke="#f5d080" stroke-width="1.5"/>
+  <circle cx="14" cy="14" r="2" fill="#f5d080"/>
+  <!-- Top-right -->
+  <path d="M86,14 Q86,20 80,14" fill="none" stroke="#f5d080" stroke-width="1.5"/>
+  <circle cx="86" cy="14" r="2" fill="#f5d080"/>
+  <!-- Bottom-left -->
+  <path d="M14,126 Q14,120 20,126" fill="none" stroke="#f5d080" stroke-width="1.5"/>
+  <circle cx="14" cy="126" r="2" fill="#f5d080"/>
+  <!-- Bottom-right -->
+  <path d="M86,126 Q86,120 80,126" fill="none" stroke="#f5d080" stroke-width="1.5"/>
+  <circle cx="86" cy="126" r="2" fill="#f5d080"/>
+
+  <!-- Center medallion background -->
+  <circle cx="50" cy="70" r="18" fill="#8b1a1a" stroke="#f5d080" stroke-width="1.5"/>
+  <circle cx="50" cy="70" r="14" fill="none" stroke="#f5d080" stroke-width="0.75"/>
+
+  <!-- Center spade symbol -->
+  <path d="M50,58 C50,58 38,66 38,73 C38,78 42,80 47,79 C45,82 44,85 42,87 L58,87 C56,85 55,82 53,79 C58,80 62,78 62,73 C62,66 50,58 50,58 Z"
+    fill="#f5d080"/>
+
+  <!-- Outer card border shadow -->
+  <rect x="2" y="2" width="96" height="136" rx="7" ry="7"
+    fill="none" stroke="#8b7140" stroke-width="1"/>
+</svg>
