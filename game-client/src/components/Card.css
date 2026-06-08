@@ -1,0 +1,43 @@
+/* ── Card face (face-up card) ──────────────────────────────────────────────── */
+
+.card-face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: #fffff8;
+  border: 1.5px solid #c8b89a;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+  font-family: 'Lato', Georgia, serif;
+  user-select: none;
+}
+
+.card-red  { color: #c0392b; }
+.card-black { color: #1a1a2e; }
+
+.card-corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  gap: 1px;
+}
+.card-top-left  { top: 5px;  left: 6px; }
+.card-bot-right { bottom: 5px; right: 6px; transform: rotate(180deg); }
+
+.card-rank { font-size: 0.82em; font-weight: 700; }
+.card-suit { font-size: 0.72em; }
+
+.card-center-suit {
+  font-size: 2em;
+  line-height: 1;
+}
+
+/* ── Face-down SVG card ────────────────────────────────────────────────────── */
+.card-svg {
+  display: block;
+  border-radius: 6px;
+  overflow: visible;
+}

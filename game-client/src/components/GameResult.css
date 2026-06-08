@@ -1,0 +1,89 @@
+/* ── Game result overlay ───────────────────────────────────────────────────── */
+
+.result-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.4s ease;
+}
+
+.result-overlay--win  { background: rgba(10, 30, 10, 0.88); }
+.result-overlay--loss { background: rgba(30, 8,  8,  0.88); }
+.result-overlay--draw { background: rgba(20, 18, 5,  0.88); }
+
+.result-box {
+  background: linear-gradient(160deg, #2a1505, #3b1f0a, #1a1a6e 200%);
+  border: 2px solid #c9a84c;
+  border-radius: 16px;
+  padding: 48px 56px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.7);
+}
+
+.result-emblem {
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.result-headline {
+  font-family: 'Cinzel', serif;
+  font-size: 2.2rem;
+  color: #f0c040;
+  margin: 0 0 10px;
+  text-shadow: 0 2px 8px rgba(240,192,64,0.4);
+}
+
+.result-subline {
+  font-family: 'Lato', sans-serif;
+  font-size: 1rem;
+  color: #c8b89a;
+  margin: 0 0 32px;
+  line-height: 1.5;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────────── */
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border: none;
+  transition: filter 0.18s, transform 0.12s;
+}
+
+.result-btn:hover  { filter: brightness(1.15); transform: translateY(-2px); }
+.result-btn:active { transform: translateY(0); }
+
+.result-btn--primary {
+  background: linear-gradient(135deg, #c9a84c, #f0c040, #c9a84c);
+  color: #1a1505;
+}
+
+.result-btn--secondary {
+  background: transparent;
+  border: 1.5px solid rgba(201,168,76,0.5);
+  color: #c9a84c;
+}
+
+/* ── Fade-in animation ─────────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
