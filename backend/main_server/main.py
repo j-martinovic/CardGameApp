@@ -1,6 +1,9 @@
 from flask import request, jsonify
 from config import app, db
 from models import User
+from war_game import war_bp
+
+app.register_blueprint(war_bp)
 
 
 @app.route("/logout", methods=["POST"])

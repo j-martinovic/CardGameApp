@@ -1,63 +1,371 @@
+/* ─── Home / Lobby Screen ────────────────────────────────────────────────────
+   Classic green felt casino table aesthetic — Cinzel headings, gold accents,
+   deep felt green background with subtle centre glow.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Page shell ──────────────────────────────────────────────────────────── */
 html, body, #root {
     height: 100%;
     width: 100%;
     margin: 0;
 }
 
-.username-label {
-    margin-top: 25px;
-    vertical-align: middle;
-}
-
 .home-screen {
-  margin: 0;
-  min-height: 100vh;
-
-  background:
-    radial-gradient(circle at center,
-      rgba(255,255,255,0.05) 0%,
-      rgba(255,255,255,0) 60%
-    ),
-    repeating-radial-gradient(
-      circle at center,
-      rgba(255,255,255,0.01) 0px,
-      rgba(255,255,255,0.01) 1px,
-      transparent 2px,
-      transparent 4px
-    ),
-    linear-gradient(
-      180deg,
-      #197a37 0%,
-      #125d29 50%,
-      #0b4a1f 100%
-    );
-
-  color: white;
-}
-
-.top-header {
+    min-height: 100vh;
+    width: 100%;
     display: flex;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    /* margin-top: 20px; */
-    margin-left: 20px;
-    align-items: center;
-    vertical-align: middle;
+    flex-direction: column;
+    box-sizing: border-box;
 
+    /* Felt background — centre-lit radial for that real-table feel */
+    background:
+        radial-gradient(ellipse 80% 60% at 50% 30%,
+            #3d7832 0%,
+            #2d5a27 40%,
+            #1a3d15 100%
+        );
+    color: var(--cream, #f5f0e8);
 }
 
-.login-button {
-    /* right: 20px;
-    top: 20px; */
-    background-color: #20c146;
-    border: 2px solid white;
-    color: white;
-    /* padding: 10px 20px; */
+/* ── Header bar ──────────────────────────────────────────────────────────── */
+.home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 60px;
+    flex-shrink: 0;
+
+    background: rgba(0, 0, 0, 0.35);
+    border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+.home-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-brand-name {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold, #c9a84c);
+    letter-spacing: 1px;
+}
+
+.home-brand-suit {
     font-size: 16px;
-    font-weight: bold;
+    color: var(--gold-muted, #9a7a35);
+    user-select: none;
+}
+
+.home-header-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.home-username {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 14px;
+    color: var(--cream, #f5f0e8);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+}
+
+.home-username-chip {
+    color: var(--gold, #c9a84c);
+    font-size: 12px;
+}
+
+/* Header buttons */
+.header-btn {
+    padding: 7px 18px;
+    border-radius: 6px;
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
     cursor: pointer;
-    border-radius: 4px;
-    margin-right: 20px;
-    vertical-align: middle;
+    transition:
+        background var(--t-fast, 0.15s),
+        box-shadow  var(--t-fast, 0.15s),
+        transform   var(--t-fast, 0.15s);
+}
+
+.header-btn--outline {
+    background: transparent;
+    border: 1px solid rgba(201, 168, 76, 0.45);
+    color: var(--cream-muted, #c8bfad);
+}
+.header-btn--outline:hover {
+    border-color: var(--gold, #c9a84c);
+    color: var(--gold, #c9a84c);
+    background: rgba(201, 168, 76, 0.08);
+}
+
+.header-btn--gold {
+    background: var(--gold, #c9a84c);
+    border: 1px solid var(--gold, #c9a84c);
+    color: var(--wood-dark, #2a1505);
+    font-weight: 700;
+}
+.header-btn--gold:hover {
+    background: var(--gold-bright, #f0c040);
+    border-color: var(--gold-bright, #f0c040);
+    box-shadow: 0 0 14px rgba(201, 168, 76, 0.4);
+    transform: translateY(-1px);
+}
+
+/* ── Main content ────────────────────────────────────────────────────────── */
+.home-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px 32px;
+    gap: 40px;
+}
+
+/* ── Hero section ────────────────────────────────────────────────────────── */
+.home-hero {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-hero-title {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 900;
+    color: var(--gold-bright, #f0c040);
+    text-shadow:
+        0 2px 12px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(201, 168, 76, 0.25);
+    letter-spacing: 1px;
+}
+
+.home-hero-sub {
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 16px;
+    color: var(--cream-muted, #c8bfad);
+    font-style: italic;
+    letter-spacing: 0.5px;
+}
+
+/* Gold suit divider */
+.home-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    color: var(--gold-muted, #9a7a35);
+    font-size: 14px;
+    user-select: none;
+}
+
+.home-divider-line {
+    width: 48px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-muted, #9a7a35), transparent);
+}
+
+/* ── Game grid ───────────────────────────────────────────────────────────── */
+.game-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* ── Individual game panel ───────────────────────────────────────────────── */
+.game-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 280px;
+    padding: 28px 24px 24px;
+    box-sizing: border-box;
+
+    background: linear-gradient(160deg, #2a1505 0%, #3b1f0a 60%, #4a2510 100%);
+    border: 1.5px solid var(--gold-border, rgba(201, 168, 76, 0.5));
+    border-radius: 12px;
+    box-shadow:
+        0 0 0 4px rgba(201, 168, 76, 0.08),
+        0 16px 48px rgba(0, 0, 0, 0.5);
+
+    transition: transform var(--t-mid, 0.3s), box-shadow var(--t-mid, 0.3s);
+}
+
+.game-panel:hover:not(.game-panel--dim) {
+    transform: translateY(-4px);
+    box-shadow:
+        0 0 0 4px rgba(201, 168, 76, 0.15),
+        0 24px 60px rgba(0, 0, 0, 0.55),
+        var(--shadow-glow-gold, 0 0 18px rgba(201,168,76,0.35));
+}
+
+.game-panel--dim {
+    border-color: rgba(201, 168, 76, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    opacity: 0.65;
+}
+
+.game-panel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(201, 168, 76, 0.25);
+}
+
+.game-panel-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+}
+
+.game-panel-title {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold-bright, #f0c040);
+    letter-spacing: 1px;
+}
+
+.game-panel-title--dim {
+    color: var(--gold-muted, #9a7a35);
+}
+
+.game-panel-desc {
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 13px;
+    color: var(--cream-muted, #c8bfad);
+    line-height: 1.55;
+}
+
+.game-panel-desc--dim {
+    opacity: 0.6;
+}
+
+/* Tag pills */
+.game-panel-tags {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.game-tag {
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: rgba(201, 168, 76, 0.12);
+    border: 1px solid rgba(201, 168, 76, 0.3);
+    color: var(--gold-muted, #9a7a35);
+}
+
+/* Play button */
+.game-play-btn {
+    width: 100%;
+    padding: 12px 20px;
+
+    background: linear-gradient(135deg, #7a5a10 0%, #c9a84c 50%, #7a5a10 100%);
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+    border: 2px solid var(--gold, #c9a84c);
+    border-radius: 8px;
+
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--wood-dark, #2a1505);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.15);
+
+    cursor: pointer;
+    transition:
+        background-position 0.35s ease,
+        transform           var(--t-fast, 0.15s),
+        box-shadow          var(--t-mid, 0.3s);
+}
+
+.game-play-btn:hover:not(:disabled) {
+    background-position: 100% 0%;
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+    transform: translateY(-1px);
+}
+
+.game-play-btn:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+.game-play-btn--disabled {
+    background: rgba(201, 168, 76, 0.1);
+    border-color: rgba(201, 168, 76, 0.2);
+    color: rgba(201, 168, 76, 0.3);
+    cursor: not-allowed;
+    text-shadow: none;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.home-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 28px;
+    flex-shrink: 0;
+
+    background: rgba(0, 0, 0, 0.25);
+    border-top: 1px solid rgba(201, 168, 76, 0.15);
+
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 12px;
+    color: rgba(201, 168, 76, 0.35);
+    letter-spacing: 1px;
+    user-select: none;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .home-header {
+        padding: 0 16px;
+    }
+    .home-brand-name {
+        font-size: 17px;
+    }
+    .home-main {
+        padding: 28px 16px 24px;
+        gap: 28px;
+    }
+    .game-panel {
+        width: 100%;
+        max-width: 360px;
+    }
+    .home-footer {
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+    }
 }

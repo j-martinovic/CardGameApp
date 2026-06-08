@@ -2,60 +2,75 @@ import { useState } from 'react'
 import './App.css'
 import HomeScreen from './Home'
 import LoginScreen from './Login'
+import WarGame from './War'
 // NOTE: A visual asset gallery exists at ./components/AssetPreview.jsx
 // To view all card/chip/avatar/table SVGs and animation demos, temporarily
 // replace the JSX return below with: <AssetPreview />
 // See frontend/README_ASSETS.md for full documentation.
 
+const API = 'http://127.0.0.1:5000'
 
 function App() {
-
-  // const val = async () => {
-  //   const validation = await fetch("http://127.0.0.1:5000/get_users")
-  // }
-  // val()
-
-  const [state, setState] = useState("home")
-  const [signUp, setSignUp] = useState(false)
+  // App-level routing: 'home' | 'loggingIn' | 'war'
+  const [screen, setScreen] = useState('home')
+  const [signUp, setSignUp]   = useState(false)
   const [userInfo, setUserInfo] = useState({})
 
-  const launchLogin = (signUp) => {
-    setState("loggingIn")
-    setSignUp(signUp)
+  // ── Auth ──────────────────────────────────────────────────────────────────
+
+  const launchLogin = (isSignUp) => {
+    setSignUp(isSignUp)
+    setScreen('loggingIn')
   }
 
-  // const closeLogin = () => {
-  //   setState("home")
-  // }
- 
-  const returnHome = async (user) => {
-    setState("home")
-    setUserInfo(user)
+  const returnHome = (user) => {
+    setUserInfo(user || {})
+    setScreen('home')
   }
 
   const signOut = async () => {
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({id: userInfo.id})
-    }
-    const response = await fetch("http://127.0.0.1:5000/logout", options)
-    const info = await response.json()
-    
-    if (response.status !== 200 && response.status !== 201) {
-      alert(info.message)
-    } else {
-      alert("Logout successful!")
+    try {
+      const resp = await fetch(`${API}/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: userInfo.id }),
+      })
+      const info = await resp.json()
+      if (!resp.ok) {
+        // Show themed error — surface message via alert for now
+        // (Home screen has no persistent error display in its current design)
+        console.error('Logout error:', info.message)
+      }
+    } catch {
+      console.error('Could not reach the server during logout.')
+    } finally {
       setUserInfo({})
+      setScreen('home')
     }
   }
 
+  // ── Navigation ────────────────────────────────────────────────────────────
+
+  const launchWar  = () => setScreen('war')
+  const quitWar    = () => setScreen('home')
+
+  // ── Render ────────────────────────────────────────────────────────────────
+
+  if (screen === 'loggingIn') {
+    return <LoginScreen returnHome={returnHome} signUp={signUp} />
+  }
+
+  if (screen === 'war') {
+    return <WarGame user={userInfo} onQuit={quitWar} />
+  }
+
   return (
-    <>
-      {state === "loggingIn" ? <LoginScreen returnHome={returnHome} signUp={signUp} /> : <HomeScreen openLogin={launchLogin} signOut={signOut} user={userInfo} />}
-    </>
+    <HomeScreen
+      openLogin={launchLogin}
+      signOut={signOut}
+      user={userInfo}
+      onPlayWar={launchWar}
+    />
   )
 }
 
