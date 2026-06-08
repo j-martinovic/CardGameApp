@@ -1,111 +1,93 @@
+/* ─── Global Casino Theme ────────────────────────────────────────────────────
+   All colour / font / shadow tokens are defined here as CSS custom properties
+   so every screen can reference them consistently.
+   ─────────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* Felt greens */
+  --felt-dark:         #1a3d15;
+  --felt-mid:          #2d5a27;
+  --felt-base:         #35654d;
+  --felt-light:        #3b7a30;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* Wood tones for panels and borders */
+  --wood-dark:         #2a1505;
+  --wood-mid:          #3b1f0a;
+  --wood-light:        #5c3317;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  /* Gold accents */
+  --gold:              #c9a84c;
+  --gold-bright:       #f0c040;
+  --gold-muted:        #9a7a35;
+  --gold-border:       rgba(201, 168, 76, 0.55);
+  --gold-glow:         rgba(201, 168, 76, 0.35);
+
+  /* Text colours */
+  --cream:             #f5f0e8;
+  --cream-muted:       #c8bfad;
+
+  /* Card face */
+  --card-face:         #fffdf5;
+  --card-border:       #c8a96e;
+
+  /* Status */
+  --win-green:         #27ae60;
+  --loss-red:          #c0392b;
+  --war-amber:         #e67e22;
+
+  /* Shadows */
+  --shadow-card:       0 4px 14px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-panel:      0 10px 40px rgba(0, 0, 0, 0.55);
+  --shadow-glow-gold:  0 0 18px rgba(201, 168, 76, 0.45);
+
+  /* Typography */
+  --font-display:      'Cinzel', Georgia, 'Times New Roman', serif;
+  --font-body:         'Lato', 'Segoe UI', Roboto, sans-serif;
+
+  /* Transitions */
+  --t-fast:  0.15s ease;
+  --t-mid:   0.3s ease;
+  --t-slow:  0.45s ease;
+
+  /* Base font */
+  font: 16px/150% var(--font-body);
+  letter-spacing: 0.2px;
+  color: var(--cream);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
+/* Remove the Vite default max-width/border-inline constraint on #root.
+   Each screen manages its own full-viewport layout. */
 body {
   margin: 0;
+  background: var(--felt-dark);
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+  display: block;
+  text-align: left;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+h1, h2, h3 {
+  font-family: var(--font-display);
+  margin: 0;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* Utility: gold divider line */
+.gold-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  border: none;
+  margin: 0;
 }

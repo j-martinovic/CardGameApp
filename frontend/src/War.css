@@ -1,0 +1,772 @@
+/* ─── War Game Screen ────────────────────────────────────────────────────────
+   Full-viewport card table: felt green background, two sides separated by a
+   centre divider, CSS 3D card flip, deal animations, confetti, game-over
+   overlay.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Page shell ──────────────────────────────────────────────────────────── */
+.war-screen {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+
+    /* Centre-lit felt table */
+    background:
+        radial-gradient(ellipse 90% 70% at 50% 50%,
+            #3d7832 0%,
+            #2d5a27 50%,
+            #1a3d15 100%
+        );
+    color: var(--cream, #f5f0e8);
+}
+
+/* ── Header bar ──────────────────────────────────────────────────────────── */
+.war-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 52px;
+    flex-shrink: 0;
+
+    background: rgba(0, 0, 0, 0.38);
+    border-bottom: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+.war-back-btn {
+    background: transparent;
+    border: 1px solid rgba(201, 168, 76, 0.35);
+    border-radius: 6px;
+    color: var(--gold-muted, #9a7a35);
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 13px;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: color var(--t-fast, 0.15s), border-color var(--t-fast, 0.15s),
+                background var(--t-fast, 0.15s);
+}
+.war-back-btn:hover {
+    color: var(--gold, #c9a84c);
+    border-color: var(--gold, #c9a84c);
+    background: rgba(201, 168, 76, 0.08);
+}
+
+.war-header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 18px;
+    color: var(--gold, #c9a84c);
+    letter-spacing: 2px;
+    user-select: none;
+}
+
+.war-header-title h1 {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold-bright, #f0c040);
+    letter-spacing: 3px;
+    margin: 0;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.war-round-badge {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 12px;
+    color: var(--gold-muted, #9a7a35);
+    letter-spacing: 1px;
+    min-width: 72px;
+    text-align: right;
+}
+
+/* ── Main table area ─────────────────────────────────────────────────────── */
+.war-table {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px 28px 8px;
+    gap: 0;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* ── Sides (bot / player) ────────────────────────────────────────────────── */
+.war-side {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.war-side-cards {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+}
+
+.war-side-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 13px;
+    color: var(--cream-muted, #c8bfad);
+    letter-spacing: 0.5px;
+}
+
+.war-side-label--player {
+    justify-content: flex-end;
+}
+
+.war-bot-icon,
+.war-player-icon {
+    font-size: 16px;
+    color: var(--gold-muted, #9a7a35);
+    user-select: none;
+}
+
+.war-card-count {
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 12px;
+    color: var(--gold-muted, #9a7a35);
+    font-style: italic;
+}
+
+/* ── Deck pile ───────────────────────────────────────────────────────────── */
+.deck-pile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Top card of the deck — box-shadow creates the stacked-cards illusion
+   without using negative positioning (avoids overflow-hidden clipping). */
+.deck-top {
+    width: 72px;
+    height: 100px;
+    border-radius: 7px;
+}
+
+.deck-top.deck-mid {
+    box-shadow:
+        3px 3px 0 0 #1a1a80,
+        3px 3px 0 1px rgba(201, 168, 76, 0.25);
+}
+
+.deck-top.deck-deep {
+    box-shadow:
+        3px 3px 0 0 #1a1a80,
+        3px 3px 0 1px rgba(201, 168, 76, 0.2),
+        6px 6px 0 0 #131360,
+        6px 6px 0 1px rgba(201, 168, 76, 0.15);
+}
+
+.deck-empty {
+    width: 72px;
+    height: 100px;
+    border: 2px dashed rgba(201, 168, 76, 0.25);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: rgba(201, 168, 76, 0.35);
+    font-family: var(--font-body, 'Lato', sans-serif);
+    letter-spacing: 0.5px;
+}
+
+.deck-count {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold, #c9a84c);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    margin-top: 4px;
+}
+
+/* ── Played card zones ───────────────────────────────────────────────────── */
+.war-played-zone {
+    width: 100px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-slot {
+    width: 100px;
+    height: 140px;
+    border: 2px dashed rgba(201, 168, 76, 0.18);
+    border-radius: 7px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* ── CSS 3D card flip ────────────────────────────────────────────────────── */
+
+.flip-wrap {
+    perspective: 900px;
+    /* Deal animation applied as a class on this element */
+}
+
+.flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease-in-out;
+}
+
+.flip-inner.flipped {
+    transform: rotateY(180deg);
+}
+
+.flip-back,
+.flip-front {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 7px;
+    box-shadow: var(--shadow-card, 0 4px 14px rgba(0,0,0,0.45));
+}
+
+/* Front face starts rotated so it becomes visible when parent flips */
+.flip-front {
+    transform: rotateY(180deg);
+}
+
+/* Deal from top (bot's card slides down from deck area) */
+@keyframes dealTop {
+    from { transform: translateY(-50px) scale(0.85); opacity: 0; }
+    to   { transform: translateY(0)     scale(1);    opacity: 1; }
+}
+
+/* Deal from bottom (player's card slides up from deck area) */
+@keyframes dealBottom {
+    from { transform: translateY(50px)  scale(0.85); opacity: 0; }
+    to   { transform: translateY(0)     scale(1);    opacity: 1; }
+}
+
+.flip-wrap.deal-from-top {
+    animation: dealTop 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.flip-wrap.deal-from-bottom {
+    animation: dealBottom 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* Hover lift on played cards (interactive feel) */
+.war-played-zone .flip-wrap:hover .flip-inner {
+    transform: rotateY(0deg) translateY(-3px);
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.5));
+}
+.war-played-zone .flip-wrap:hover .flip-inner.flipped {
+    transform: rotateY(180deg) translateY(-3px);
+}
+
+/* ── Centre message area ─────────────────────────────────────────────────── */
+.war-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 60px;
+    position: relative;
+}
+
+/* Horizontal felt divider lines */
+.war-center::before,
+.war-center::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent, rgba(201, 168, 76, 0.3), transparent
+    );
+    position: absolute;
+}
+.war-center::before { top: 0; }
+.war-center::after  { bottom: 0; }
+
+.war-message {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 8px 24px;
+    border-radius: 8px;
+    text-align: center;
+    animation: msgPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes msgPop {
+    from { transform: scale(0.8); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+.war-message--win {
+    color: var(--win-green, #27ae60);
+    text-shadow: 0 0 16px rgba(39, 174, 96, 0.5);
+    background: rgba(39, 174, 96, 0.08);
+    border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.war-message--lose {
+    color: #e74c3c;
+    text-shadow: 0 0 16px rgba(231, 76, 60, 0.4);
+    background: rgba(231, 76, 60, 0.08);
+    border: 1px solid rgba(231, 76, 60, 0.25);
+}
+
+.war-message--war {
+    color: var(--gold-bright, #f0c040);
+    font-size: clamp(22px, 3.5vw, 36px);
+    text-shadow:
+        0 0 20px rgba(240, 192, 64, 0.7),
+        0 2px 10px rgba(0, 0, 0, 0.5);
+    animation: warFlash 0.5s ease both;
+    background: rgba(201, 168, 76, 0.08);
+    border: 1px solid rgba(201, 168, 76, 0.35);
+}
+
+@keyframes warFlash {
+    0%   { transform: scale(0.7) rotate(-3deg); opacity: 0; }
+    60%  { transform: scale(1.1) rotate(1deg);  opacity: 1; }
+    100% { transform: scale(1)   rotate(0deg);  opacity: 1; }
+}
+
+.war-idle-hint {
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 13px;
+    color: rgba(201, 168, 76, 0.4);
+    font-style: italic;
+    user-select: none;
+}
+
+/* ── War sequence cards ──────────────────────────────────────────────────── */
+.war-sequence {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.war-sequence-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.war-seq-side {
+    display: flex;
+    gap: -8px;
+}
+
+.war-seq-card {
+    margin-left: -10px;
+    box-shadow: var(--shadow-card);
+    border-radius: 5px;
+    animation: warCardSlide 0.3s ease both;
+    animation-delay: calc(var(--si, 0) * 0.1s);
+}
+
+.war-seq-card:first-child {
+    margin-left: 0;
+}
+
+@keyframes warCardSlide {
+    from { transform: translateY(-20px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+}
+
+.war-seq-vs {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 11px;
+    color: var(--gold-muted, #9a7a35);
+    letter-spacing: 1px;
+    user-select: none;
+}
+
+/* ── Deal / action button ────────────────────────────────────────────────── */
+.war-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px 14px;
+    flex-shrink: 0;
+
+    background: rgba(0, 0, 0, 0.25);
+    border-top: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.war-deal-btn {
+    padding: 14px 48px;
+    min-width: 200px;
+
+    background: linear-gradient(135deg, #7a5a10 0%, #c9a84c 50%, #7a5a10 100%);
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+    border: 2px solid var(--gold, #c9a84c);
+    border-radius: 10px;
+
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--wood-dark, #2a1505);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.15);
+
+    cursor: pointer;
+    transition:
+        background-position 0.35s ease,
+        transform var(--t-fast, 0.15s),
+        box-shadow var(--t-mid, 0.3s);
+}
+
+.war-deal-btn--active:hover {
+    background-position: 100% 0%;
+    box-shadow: 0 0 26px rgba(201, 168, 76, 0.5);
+    transform: translateY(-2px);
+}
+
+.war-deal-btn--active:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+.war-deal-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.war-hint {
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 12px;
+    color: rgba(201, 168, 76, 0.35);
+    user-select: none;
+}
+
+.war-hint kbd {
+    font-family: inherit;
+    font-size: 11px;
+    padding: 1px 5px;
+    background: rgba(201, 168, 76, 0.12);
+    border: 1px solid rgba(201, 168, 76, 0.25);
+    border-radius: 4px;
+    color: rgba(201, 168, 76, 0.5);
+}
+
+/* ── Generic war buttons (used in overlays) ──────────────────────────────── */
+.war-btn {
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform var(--t-fast, 0.15s), box-shadow var(--t-mid, 0.3s);
+}
+
+.war-btn--gold {
+    background: var(--gold, #c9a84c);
+    border: 2px solid var(--gold, #c9a84c);
+    color: var(--wood-dark, #2a1505);
+}
+.war-btn--gold:hover {
+    background: var(--gold-bright, #f0c040);
+    border-color: var(--gold-bright, #f0c040);
+    box-shadow: 0 0 18px rgba(201, 168, 76, 0.45);
+    transform: translateY(-1px);
+}
+
+.war-btn--outline {
+    background: transparent;
+    border: 2px solid rgba(201, 168, 76, 0.4);
+    color: var(--cream-muted, #c8bfad);
+}
+.war-btn--outline:hover {
+    border-color: var(--gold, #c9a84c);
+    color: var(--gold, #c9a84c);
+    background: rgba(201, 168, 76, 0.08);
+}
+
+/* ── Loading screen ──────────────────────────────────────────────────────── */
+.war-loading-screen {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    background:
+        radial-gradient(ellipse 90% 70% at 50% 50%,
+            #3d7832 0%, #2d5a27 50%, #1a3d15 100%
+        );
+}
+
+.war-loading-deck {
+    position: relative;
+    width: 70px;
+    height: 98px;
+}
+
+.loading-card {
+    position: absolute;
+    inset: 0;
+    animation: loadingShuffle 1.2s ease-in-out infinite;
+    border-radius: 7px;
+}
+
+.lc-1 { animation-delay: 0s;    z-index: 3; }
+.lc-2 { animation-delay: 0.4s;  z-index: 2; }
+.lc-3 { animation-delay: 0.8s;  z-index: 1; }
+
+@keyframes loadingShuffle {
+    0%   { transform: translate(0,    0)    rotate(0deg);   }
+    25%  { transform: translate(-14px, -8px) rotate(-8deg); }
+    50%  { transform: translate(0,    0)    rotate(0deg);   }
+    75%  { transform: translate(14px, -8px) rotate(8deg);   }
+    100% { transform: translate(0,    0)    rotate(0deg);   }
+}
+
+.war-loading-text {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: 16px;
+    color: var(--gold, #c9a84c);
+    letter-spacing: 2px;
+    animation: loadingPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 0.5; }
+    50%       { opacity: 1;   }
+}
+
+/* ── Error page ──────────────────────────────────────────────────────────── */
+.war-error-page {
+    align-items: center;
+    justify-content: center;
+}
+
+.war-error-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 40px;
+    background: linear-gradient(160deg, #2a1505, #3b1f0a);
+    border: 2px solid rgba(201, 168, 76, 0.35);
+    border-radius: 12px;
+    text-align: center;
+    max-width: 380px;
+}
+
+.war-error-icon {
+    font-size: 48px;
+    color: var(--gold-muted, #9a7a35);
+    opacity: 0.5;
+}
+
+.war-error-panel h2 {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    color: var(--gold-bright, #f0c040);
+    font-size: 20px;
+}
+
+.war-error-panel p {
+    font-size: 14px;
+    color: var(--cream-muted, #c8bfad);
+    line-height: 1.5;
+}
+
+/* ── Game-over overlay ───────────────────────────────────────────────────── */
+.gameover-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: overlayFadeIn 0.45s ease both;
+    overflow: hidden;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.gameover-overlay--win {
+    background: rgba(10, 40, 10, 0.88);
+}
+.gameover-overlay--loss {
+    background: rgba(20, 5, 5, 0.88);
+}
+.gameover-overlay--draw {
+    background: rgba(10, 15, 30, 0.85);
+}
+
+.gameover-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 48px 52px;
+    text-align: center;
+    position: relative;
+    z-index: 101;
+
+    background: linear-gradient(160deg, #2a1505 0%, #3b1f0a 55%, #4a2510 100%);
+    border: 2px solid var(--gold, #c9a84c);
+    border-radius: 16px;
+    box-shadow:
+        0 0 0 6px rgba(201, 168, 76, 0.1),
+        0 32px 80px rgba(0, 0, 0, 0.7);
+
+    animation: panelRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.15s;
+}
+
+@keyframes panelRise {
+    from { transform: scale(0.85) translateY(20px); opacity: 0; }
+    to   { transform: scale(1)    translateY(0);    opacity: 1; }
+}
+
+.gameover-icon {
+    font-size: 56px;
+    color: var(--gold-bright, #f0c040);
+    text-shadow: 0 0 24px rgba(240, 192, 64, 0.6);
+    user-select: none;
+    animation: iconBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: 0.35s;
+}
+
+.gameover-icon--dim {
+    color: var(--gold-muted, #9a7a35);
+    text-shadow: none;
+    opacity: 0.6;
+}
+
+@keyframes iconBounce {
+    from { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+    to   { transform: scale(1)   rotate(0deg);   opacity: 1; }
+}
+
+.gameover-title {
+    font-family: var(--font-display, 'Cinzel', Georgia, serif);
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.gameover-title--win {
+    color: var(--gold-bright, #f0c040);
+    text-shadow:
+        0 0 30px rgba(240, 192, 64, 0.6),
+        0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.gameover-title--loss {
+    color: #e74c3c;
+    text-shadow: 0 0 20px rgba(231, 76, 60, 0.4);
+}
+
+.gameover-sub {
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 15px;
+    color: var(--cream-muted, #c8bfad);
+    font-style: italic;
+    line-height: 1.5;
+}
+
+.gameover-detail {
+    font-family: var(--font-body, 'Lato', sans-serif);
+    font-size: 13px;
+    color: var(--gold-muted, #9a7a35);
+}
+
+.gameover-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ── Confetti (CSS-only) ─────────────────────────────────────────────────── */
+.confetti-wrap {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 102;
+}
+
+.confetti-piece {
+    position: absolute;
+    top: -30px;
+    border-radius: 2px;
+    animation: confettiFall 2.4s ease-in both;
+}
+
+@keyframes confettiFall {
+    0%   {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    80%  {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(105vh) rotate(var(--rot, 540deg));
+        opacity: 0;
+    }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .war-table {
+        padding: 8px 12px 6px;
+    }
+    .war-side-cards {
+        gap: 16px;
+    }
+    .war-deal-btn {
+        padding: 12px 32px;
+        min-width: 160px;
+        font-size: 13px;
+    }
+    .gameover-panel {
+        padding: 32px 28px;
+    }
+    .gameover-title {
+        font-size: 28px;
+    }
+}
+
+@media (max-height: 680px) {
+    .war-header { height: 44px; }
+    .war-table  { padding: 6px 20px 4px; }
+    .war-footer { padding: 6px 20px 10px; }
+    .deck-pile  { padding-top: 4px; }
+}
