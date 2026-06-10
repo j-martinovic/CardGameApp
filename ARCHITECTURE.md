@@ -290,3 +290,81 @@ Future games should follow the same pattern.
 | Passwords stored in plaintext     | Existing Flask issue — do not fix in this layer    |
 | In-memory Flask game state        | Flask war state is lost on server restart          |
 | Bot delay is frontend-only        | BOT_DELAY_MS is a UI constant, not a server delay  |
+
+---
+
+## Phase 3 — Online Multiplayer, Game Playground, and Go Fish
+
+### New Files Added
+
+| File | What it does |
+|------|-------------|
+| backend/main_server/rooms.py | Flask Blueprint: in-memory room/lobby management |
+| backend/main_server/playground.py | Flask Blueprint: save/load custom game rules + CustomGame SQLite model |
+| game-server/customGameRegistry.js | boardgame.io wrapper for dynamically-built custom games |
+| game-client/src/lobby/MultiplayerLobby.jsx | Online room creation, join, wait UI |
+| game-client/src/lobby/RoomsAPI.js | Fetch wrapper for Flask /rooms endpoints |
+| game-client/src/playground/RuleSchema.js | Full rule schema for the Game Playground |
+| game-client/src/playground/CustomGameEngine.js | Builds boardgame.io Game from rules config |
+| game-client/src/playground/PlaygroundAPI.js | Fetch wrapper for Flask /playground endpoints |
+| game-client/src/playground/PlaygroundPage.jsx | Playground top-level screen |
+| game-client/src/playground/RuleBuilder.jsx | Multi-step rule form (12 steps) |
+| game-client/src/playground/CustomBoard.jsx | Generic game board for custom games |
+| game-client/src/playground/GameLibrary.jsx | Browse public saved games |
+| game-client/src/games/gofish/GoFish.js | Go Fish boardgame.io game definition |
+| game-client/src/games/gofish/GoFishBoard.jsx | Go Fish React board |
+
+### New Flask Routes
+
+| Method | Path | What it does |
+|--------|------|-------------|
+| POST | /rooms/create | Create a multiplayer room |
+| POST | /rooms/\<id\>/join | Join a room |
+| POST | /rooms/\<id\>/leave | Leave a room |
+| POST | /rooms/\<id\>/ready | Toggle ready status |
+| GET | /rooms/\<id\> | Get room state |
+| GET | /rooms/code/\<code\> | Find room by 4-char code |
+| POST | /rooms/\<id\>/start | Host starts the game |
+| POST | /rooms/\<id\>/set_match | Set boardgame.io matchID |
+| GET | /rooms | List open rooms |
+| POST | /playground/games | Save custom game rules |
+| GET | /playground/games/\<id\> | Load custom game |
+| PUT | /playground/games/\<id\> | Update custom game |
+| DELETE | /playground/games/\<id\> | Delete custom game |
+| GET | /playground/games | List public custom games |
+| POST | /playground/games/\<id\>/play | Record a play |
+
+### Port Map (Updated)
+
+| Server | Port |
+|--------|------|
+| Flask API | 5000 |
+| boardgame.io server | 8000 |
+| game-client (new lobby + games) | 3000 |
+| existing SPA (frontend/) | 5173 |
+
+### Multiplayer Flow
+
+1. Player A creates a room via MultiplayerLobby → Flask `/rooms/create` → gets room_code
+2. Player A shares room_code with friends
+3. Friends join via `/rooms/code/<code>` → `/rooms/<id>/join`
+4. All players mark ready → host clicks Start → Flask `/rooms/<id>/start`
+5. Host's client calls `createMultiplayerMatch(gameName, numPlayers)` → boardgame.io creates match
+6. Host calls Flask `/rooms/<id>/set_match` with the new matchID
+7. All players poll `getRoom(roomId)` → see bgio_match_id → call `joinMultiplayerMatch`
+8. All players connected to boardgame.io match via Socket.IO → game begins
+
+### Adding Multiplayer Support to a New Game — Checklist
+
+- [ ] Create `game-client/src/games/mygame/MyGame.js` with `minPlayers` / `maxPlayers` set correctly
+- [ ] Create `game-client/src/games/mygame/MyGameBoard.jsx`
+- [ ] Add to `game-server/games.js` imports and `games` array
+- [ ] Add Client HOC to `game-client/src/App.jsx` and add render case
+- [ ] Add to `GAMES` array in `game-client/src/lobby/Lobby.jsx`
+- [ ] Add to `MULTIPLAYER_GAMES` array in `game-client/src/lobby/MultiplayerLobby.jsx`
+
+### Guest Flow
+
+Players who have not logged into Flask receive a guest ID (`guest_${Date.now()}`) stored in
+`sessionStorage`. The Flask `/rooms` endpoints skip the `User` table lookup when `user_id`
+starts with `"guest_"`, allowing unauthenticated players to use the multiplayer lobby.

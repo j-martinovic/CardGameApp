@@ -2,8 +2,12 @@ from flask import request, jsonify
 from config import app, db
 from models import User
 from war_game import war_bp
+from rooms import rooms_bp
+from playground import playground_bp
 
 app.register_blueprint(war_bp)
+app.register_blueprint(rooms_bp)
+app.register_blueprint(playground_bp)
 
 
 @app.route("/logout", methods=["POST"])

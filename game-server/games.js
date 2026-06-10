@@ -12,8 +12,30 @@
 // directories share the same repo. For production builds, copy game
 // definitions to a shared package instead.
 import { WarGame } from '../game-client/src/games/war/War.js';
+import { GoFishGame } from '../game-client/src/games/gofish/GoFish.js';
+import { CustomGameTemplate } from './customGameRegistry.js';
+
+// ── createMultiplayerMatch pattern ───────────────────────────────────────────
+//
+// When the multiplayer lobby (MultiplayerLobby.jsx) starts a game, it calls
+// LobbyAPI.createMultiplayerMatch(gameName, numPlayers, setupData).
+//
+// For standard games (war, go_fish):
+//   setupData = {}   numPlayers comes from the room's max_players
+//
+// For custom games:
+//   setupData = { rules: <RuleSchema object> }
+//   gameName  = 'custom'
+//   numPlayers comes from rules.numPlayers
+//
+// boardgame.io's createMatch endpoint passes numPlayers and setupData to setup().
+// The game's setup(ctx, setupData) receives both. CustomGameTemplate uses
+// setupData.rules to delegate to buildCustomGame() (CustomGameEngine.js).
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const games = [
   WarGame,
-  // Add future games here: BlackjackGame, PokerGame, etc.
+  GoFishGame,
+  CustomGameTemplate,
+  // Add future games here
 ];

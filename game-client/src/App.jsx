@@ -1,24 +1,28 @@
 // App.jsx — top-level routing for the game client.
 //
 // Screens:
-//   'lobby'  — Lobby.jsx (game selection + name entry)
-//   'game'   — boardgame.io Client HOC (renders WarBoard.jsx)
+//   'lobby'       — Lobby.jsx (game selection + name entry)
+//   'multiplayer' — MultiplayerLobby.jsx (online room system)
+//   'playground'  — PlaygroundPage.jsx (custom game builder)
+//   'game'        — boardgame.io Client HOC (renders game board)
 //
-// No React Router used — the game client only has two screens and
-// simple state-machine routing is clearer than URL-based routing here.
+// No React Router used — simple state-machine routing.
 
 import React, { useState } from 'react';
 import { Client } from 'boardgame.io/react';
 import { SocketIO } from 'boardgame.io/multiplayer';
 import { WarGame } from './games/war/War';
 import WarBoard from './games/war/WarBoard';
+import { GoFishGame } from './games/gofish/GoFish';
+import GoFishBoard from './games/gofish/GoFishBoard';
 import Lobby from './lobby/Lobby';
+import MultiplayerLobby from './lobby/MultiplayerLobby';
+import PlaygroundPage from './playground/PlaygroundPage';
 import { useGameState } from './hooks/useGameState';
 
 const BGIO_SERVER = import.meta.env.VITE_BGIO_SERVER_URL || 'http://localhost:8000';
 
-// Build the boardgame.io WarClient once (outside render to avoid re-creation).
-// The Client HOC handles Socket.IO connection and injects G/ctx/moves into WarBoard.
+// Build Client HOCs once outside render to avoid re-creation.
 const WarClient = Client({
   game: WarGame,
   board: WarBoard,
@@ -26,41 +30,80 @@ const WarClient = Client({
   debug: false,
 });
 
+const GoFishClient = Client({
+  game: GoFishGame,
+  board: GoFishBoard,
+  multiplayer: SocketIO({ server: BGIO_SERVER }),
+  debug: false,
+});
+
 export default function App() {
   const { matchCredentials, joinMatch, leaveMatch, userName } = useGameState('Player');
 
-  const [currentGame, setCurrentGame] = useState(null); // 'war' | null (extensible)
+  const [screen, setScreen] = useState('lobby');
+  const [currentGame, setCurrentGame] = useState(null);
+
+  // userId: read from URL param or sessionStorage (null = guest)
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get('userId') || sessionStorage.getItem('userId') || null;
+  const urlName = urlParams.get('userName') || null;
+  if (urlName) sessionStorage.setItem('mp_name', urlName);
 
   function handleJoinMatch(gameName, matchID, playerID, playerName, playerCredentials) {
     joinMatch(matchID, playerID, playerName, playerCredentials);
     setCurrentGame(gameName);
+    setScreen('game');
   }
 
   function handleQuit() {
     leaveMatch();
     setCurrentGame(null);
+    setScreen('lobby');
   }
 
-  // ── Render game screen ───────────────────────────────────────────────────
-  if (currentGame === 'war' && matchCredentials) {
-    return (
-      <WarClient
-        matchID={matchCredentials.matchID}
-        playerID={matchCredentials.playerID}
-        credentials={matchCredentials.playerCredentials}
-        // Extra props forwarded to WarBoard via boardgame.io's passThrough.
-        // WarBoard reads these from its own props.
-        onQuit={handleQuit}
-        playerName={matchCredentials.playerName}
-      />
-    );
+  // ── Render game screen ────────────────────────────────────────────────────
+  if (screen === 'game' && matchCredentials) {
+    const commonProps = {
+      matchID: matchCredentials.matchID,
+      playerID: matchCredentials.playerID,
+      credentials: matchCredentials.playerCredentials,
+      onQuit: handleQuit,
+      playerName: matchCredentials.playerName,
+    };
+
+    if (currentGame === 'war') return <WarClient {...commonProps} />;
+    if (currentGame === 'go_fish') return <GoFishClient {...commonProps} />;
+    // Fallback: return to lobby
+    handleQuit();
   }
 
-  // ── Render lobby ─────────────────────────────────────────────────────────
+  // ── Render multiplayer lobby ──────────────────────────────────────────────
+  if (screen === 'multiplayer') return (
+    <MultiplayerLobby
+      userId={userId}
+      userName={urlName || sessionStorage.getItem('mp_name') || userName}
+      onJoinMatch={handleJoinMatch}
+      onBack={() => setScreen('lobby')}
+    />
+  );
+
+  // ── Render playground ─────────────────────────────────────────────────────
+  if (screen === 'playground') return (
+    <PlaygroundPage
+      userId={userId}
+      userName={urlName || sessionStorage.getItem('mp_name') || userName}
+      onJoinMatch={handleJoinMatch}
+      onBack={() => setScreen('lobby')}
+    />
+  );
+
+  // ── Render main lobby ─────────────────────────────────────────────────────
   return (
     <Lobby
-      userName={userName}
+      userName={urlName || userName}
       onJoinMatch={handleJoinMatch}
+      onMultiplayer={() => setScreen('multiplayer')}
+      onPlayground={() => setScreen('playground')}
     />
   );
 }

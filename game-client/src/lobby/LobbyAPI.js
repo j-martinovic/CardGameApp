@@ -65,3 +65,64 @@ export async function getGames() {
     return [];
   }
 }
+
+/**
+ * createMultiplayerMatch(gameName, numPlayers, setupData)
+ * Creates a match with multiple seats. Does not join — caller must joinMultiplayerMatch.
+ */
+export async function createMultiplayerMatch(gameName, numPlayers, setupData = {}) {
+  const { matchID } = await lobbyClient.createMatch(gameName, {
+    numPlayers,
+    setupData,
+  });
+  return { matchID };
+}
+
+/**
+ * joinMultiplayerMatch(gameName, matchID, playerID, playerName)
+ * Joins an existing match at a specific seat (playerID "0", "1", …).
+ * Returns { playerCredentials }.
+ */
+export async function joinMultiplayerMatch(gameName, matchID, playerID, playerName) {
+  const { playerCredentials } = await lobbyClient.joinMatch(gameName, matchID, {
+    playerID: String(playerID),
+    playerName,
+  });
+  return { playerCredentials };
+}
+
+/**
+ * leaveMultiplayerMatch(gameName, matchID, playerID, credentials)
+ */
+export async function leaveMultiplayerMatch(gameName, matchID, playerID, credentials) {
+  await lobbyClient.leaveMatch(gameName, matchID, {
+    playerID: String(playerID),
+    credentials,
+  });
+}
+
+/**
+ * getMatchState(gameName, matchID)
+ * Returns current match metadata (players, status) without joining.
+ */
+export async function getMatchState(gameName, matchID) {
+  const match = await lobbyClient.getMatch(gameName, matchID);
+  return match;
+}
+
+/**
+ * createCustomGameMatch(rules, numPlayers, playerName)
+ * Creates a 'custom' boardgame.io match, passing rules in setupData.
+ * Joins as playerID '0' (host).
+ */
+export async function createCustomGameMatch(rules, numPlayers, playerName) {
+  const { matchID } = await lobbyClient.createMatch('custom', {
+    numPlayers,
+    setupData: { rules },
+  });
+  const { playerCredentials } = await lobbyClient.joinMatch('custom', matchID, {
+    playerID: '0',
+    playerName,
+  });
+  return { matchID, playerID: '0', playerCredentials };
+}

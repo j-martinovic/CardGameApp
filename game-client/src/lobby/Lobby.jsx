@@ -13,6 +13,13 @@ const GAMES = [
     available: true,
   },
   {
+    id: 'go_fish',
+    label: 'Go Fish',
+    description: 'Ask your opponents for ranks, collect books of 4. Most books wins!',
+    icon: '🐟',
+    available: true,
+  },
+  {
     id: 'blackjack',
     label: 'Blackjack',
     description: 'Coming soon.',
@@ -23,10 +30,12 @@ const GAMES = [
 
 /**
  * Props:
- *   userName    — pre-filled player name (from URL param or localStorage)
- *   onJoinMatch — callback(gameName, matchID, playerID, playerName)
+ *   userName      — pre-filled player name (from URL param or localStorage)
+ *   onJoinMatch   — callback(gameName, matchID, playerID, playerName, playerCredentials)
+ *   onMultiplayer — callback to switch to MultiplayerLobby screen
+ *   onPlayground  — callback to switch to PlaygroundPage screen
  */
-export default function Lobby({ userName = '', onJoinMatch }) {
+export default function Lobby({ userName = '', onJoinMatch, onMultiplayer, onPlayground }) {
   const [name, setName] = useState(userName || '');
   const [selectedGame, setSelectedGame] = useState('war');
   const [loading, setLoading] = useState(false);
@@ -112,6 +121,30 @@ export default function Lobby({ userName = '', onJoinMatch }) {
           {loading ? 'Connecting…' : 'Deal Me In'}
         </button>
       </form>
+
+      {/* Multiplayer & Playground buttons */}
+      <div style={{ display: 'flex', gap: 10, maxWidth: 400, margin: '12px auto 0' }}>
+        {onMultiplayer && (
+          <button
+            className="lobby-start-btn"
+            style={{ background: '#1a3a5c', flex: 1 }}
+            type="button"
+            onClick={onMultiplayer}
+          >
+            👥 Play with Friends
+          </button>
+        )}
+        {onPlayground && (
+          <button
+            className="lobby-start-btn"
+            style={{ background: '#2d1a5c', flex: 1 }}
+            type="button"
+            onClick={onPlayground}
+          >
+            🔧 Build a Game
+          </button>
+        )}
+      </div>
 
       <footer className="lobby-footer">
         <a href="http://localhost:5173" className="lobby-footer-link">
