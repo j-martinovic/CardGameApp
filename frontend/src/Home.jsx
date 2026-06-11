@@ -17,6 +17,41 @@ const SpadeSVG = () => (
     </svg>
 )
 
+
+// ── Grid of Games ────────────────────────────────────────────────────────
+
+const GamePanel = ({name, description, players, cards, difficulty, onPlayGame}) => {
+
+    return (
+        <article className="game-panel">
+            <div className="game-panel-icon">
+                <SpadeSVG />
+            </div>
+            <div className="game-panel-body">
+                <h2 className="game-panel-title">{name}</h2>
+                <p className="game-panel-desc">
+                    {description}
+                </p>
+                <div className="game-panel-tags">
+                    <span className="game-tag">{players + " Players"}</span>
+                    <span className="game-tag">{cards + " Cards"}</span>
+                    <span className="game-tag">{difficulty}</span>
+                </div>
+            </div>
+            <button
+                onClick={onPlayGame}
+                className="game-play-btn"
+            >
+                {"Play " + name}
+            </button>
+        </article>
+    )
+
+}
+
+
+
+
 // ── Main component ────────────────────────────────────────────────────────
 
 const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
@@ -37,6 +72,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                             <span className="home-username">
                                 <span className="home-username-chip" aria-hidden="true">♦</span>
                                 {user.userName}
+                                <span className="home-username-chip" aria-hidden="true">♣</span>
                             </span>
                             <button
                                 onClick={signOut}
@@ -114,6 +150,66 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                         </button>
                     </article>
 
+                    <GamePanel 
+                        name="Mighty" 
+                        description={"A tantalizing combination of Hearts and Euchre, leverage magical cards and unknown alliances to collect points and vanquish your opponents!"}
+                        players="5"
+                        cards="53"
+                        difficulty={"Hard"}
+                        onPlayGame={onPlayWar}
+                    />                    
+                    
+                    <GamePanel 
+                        name="Hearts" 
+                        description={"Strike a careful balance between taking tricks while avoiding hearts and the pesky Queen of Spades... or take them all."}
+                        players="4"
+                        cards="52"
+                        difficulty={"Medium"}
+                        onPlayGame={onPlayWar}
+                    />                    
+                    
+                    <GamePanel 
+                        name="Bridge" 
+                        description={"This classic bidding game has a simple goal; take as many tricks as you can."}
+                        players="4"
+                        cards="52"
+                        difficulty={"Easy"}
+                        onPlayGame={onPlayWar}
+                    />                     
+                    <GamePanel 
+                        name="Billy's Game" 
+                        description={"This unique, combat-style card game leverages suit-based power-ups alongside strategy and chance to determine the strongest combatant!"}
+                        players="4-6"
+                        cards="54"
+                        difficulty={"Medium"}
+                        onPlayGame={onPlayWar}
+                    />                    
+                    <GamePanel 
+                        name="Spades" 
+                        description={"With spades as trump, bid your hand and make your bid without taking too many bags. First to 500 wins."}
+                        players="4"
+                        cards="52"
+                        difficulty={"Medium"}
+                        onPlayGame={onPlayWar}
+                    />                    
+                    <GamePanel 
+                        name="Bura" 
+                        description={"This chaotic game comes from Russian prisons. Hold three cards at a time, no need to follow suit, just take points and win."}
+                        players="2"
+                        cards="40"
+                        difficulty={"Easy"}
+                        onPlayGame={onPlayWar}
+                    />
+
+                    <GamePanel 
+                        name="99" 
+                        description={"Bid wisely using cards from your hand and make your bid exactly for maximum points."}
+                        players="3"
+                        cards="37"
+                        difficulty={"Hard"}
+                        onPlayGame={onPlayWar}
+                    />
+
                     {/* More games — coming soon placeholder */}
                     <article className="game-panel game-panel--dim">
                         <div className="game-panel-icon">
@@ -129,7 +225,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                         <div className="game-panel-body">
                             <h2 className="game-panel-title game-panel-title--dim">More Tables</h2>
                             <p className="game-panel-desc game-panel-desc--dim">
-                                New tables opening soon. Check back for Blackjack, Poker, and more.
+                                New tables opening soon. Check back for Mighty, Blackjack, Poker, and more.
                             </p>
                         </div>
                         <button className="game-play-btn game-play-btn--disabled" disabled>

@@ -33,8 +33,8 @@ war_bp = Blueprint('war', __name__, url_prefix='/war')
 _active_games = {}
 
 # Card rank ordering — index+2 gives the numeric value (2→2 … A→14)
-_RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-_SUITS = ['hearts', 'diamonds', 'clubs', 'spades']
+_RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+_SUITS = ['H', 'D', 'C', 'S']
 _RANK_VALUES = {rank: idx + 2 for idx, rank in enumerate(_RANKS)}
 
 _MAX_ROUNDS = 1000  # Safety valve to prevent infinite games

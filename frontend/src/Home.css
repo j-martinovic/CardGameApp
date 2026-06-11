@@ -216,7 +216,7 @@ html, body, #root {
 
 .game-panel--dim {
     border-color: rgba(201, 168, 76, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35); 
     opacity: 0.65;
 }
 

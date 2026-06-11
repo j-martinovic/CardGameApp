@@ -45,8 +45,8 @@ import Avatar6Src     from '../assets/ui/avatars/Avatar6.svg';
 
 // ─── Data: all 52 card combinations ──────────────────────────────────────────
 
-const SUITS  = ['spades', 'hearts', 'diamonds', 'clubs'];
-const RANKS  = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const SUITS  = ['S', 'H', 'D', 'C'];
+const RANKS  = ['A','2','3','4','5','6','7','8','9','T','J','Q','K'];
 
 // ─── Sub-components ────────────────────────────────────────────────────────────
 

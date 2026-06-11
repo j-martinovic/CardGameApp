@@ -123,11 +123,31 @@ function pipFontSize(rank) {
 }
 
 // ─── Main component ──────────────────────────────────────────────────────────
-
 /**
  * Renders a single playing card as an inline SVG.
  */
-function CardFace({ rank = 'A', suit = 'spades', width = 100, height = 140 }) {
+function CardFace({ rank = 'A', suit = 'S', width = 100, height = 140 }) {
+ 
+  const imgUrl = new URL(`./cards_good/${rank}${suit}.svg`, import.meta.url).href;
+
+  return (
+      <img
+        src={imgUrl}
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        /* 'xMidYMid meet' ensures that your card asset preserves its 
+          original design proportions perfectly without stretching if 
+          the passed width and height aspect ratios vary slightly.
+        */
+        preserveAspectRatio="xMidYMid meet"
+      />
+  );
+}
+
+
+function CardFace_old({ rank = 'A', suit = 'spades', width = 100, height = 140 }) {
   const color = SUIT_COLOR[suit] ?? '#1a1a1a';
   const symbol = SUIT_SYMBOL[suit] ?? '?';
   const pips = PIP_LAYOUTS[rank];
