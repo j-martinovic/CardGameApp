@@ -20,7 +20,8 @@ import MultiplayerLobby from './lobby/MultiplayerLobby';
 import PlaygroundPage from './playground/PlaygroundPage';
 import { useGameState } from './hooks/useGameState';
 
-const BGIO_SERVER = import.meta.env.VITE_BGIO_SERVER_URL || 'http://localhost:8000';
+// const BGIO_SERVER = import.meta.env.VITE_BGIO_SERVER_URL || 'http://localhost:8000';
+const BGIO_SERVER = 'http://localhost:8000';
 
 // Build Client HOCs once outside render to avoid re-creation.
 const WarClient = Client({

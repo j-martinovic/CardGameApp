@@ -3,7 +3,7 @@
 // Players take turns asking others for ranks they hold.
 // Collect sets of 4 (books). Most books wins.
 
-import { INVALID_MOVE } from 'boardgame.io/core';
+import { INVALID_MOVE } from 'boardgame.io/dist/cjs/core.js';
 
 const SUITS = ['♠', '♥', '♦', '♣'];
 const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];

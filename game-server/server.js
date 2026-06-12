@@ -2,7 +2,7 @@
 // This file is the only entry point for the game server layer.
 // Flask at port 5000 is NOT touched. The existing SPA at port 5173 is NOT touched.
 
-import { Server } from 'boardgame.io/server';
+import { Server, Origins } from 'boardgame.io/dist/cjs/server.js';
 import cors from 'koa-cors';
 import { games } from './games.js';
 
@@ -15,22 +15,25 @@ const ALLOWED_ORIGINS = (process.env.BGIO_ALLOWED_ORIGINS || 'http://localhost:3
   .map((o) => o.trim());
 
 // Build the boardgame.io server with all registered games.
-const server = Server({ games });
+const server = Server({ 
+  games: games,
+  origins: [Origins.LOCALHOST],
+});
 
 // Apply CORS middleware so the React clients can reach this server.
 // koa-cors wraps Koa's app, which boardgame.io exposes as server.app.
-server.app.use(
-  cors({
-    origin: (ctx) => {
-      const requestOrigin = ctx.request.header.origin;
-      if (ALLOWED_ORIGINS.includes(requestOrigin)) {
-        return requestOrigin;
-      }
-      return ALLOWED_ORIGINS[0]; // fallback — still restricts unknown origins
-    },
-    credentials: true,
-  })
-);
+// server.app.use(
+//   cors({
+//     origin: (ctx) => {
+//       const requestOrigin = ctx.request.header.origin;
+//       if (ALLOWED_ORIGINS.includes(requestOrigin)) {
+//         return requestOrigin;
+//       }
+//       return ALLOWED_ORIGINS[0]; // fallback — still restricts unknown origins
+//     },
+//     credentials: true,
+//   })
+// );
 
 server.run(PORT, () => {
   console.log(`boardgame.io server running on http://localhost:${PORT}`);

@@ -1,7 +1,7 @@
 // CustomGameEngine.js — generates a boardgame.io Game from a rules config object.
 // Called at runtime to create playable boardgame.io games from user-defined rules.
 
-import { INVALID_MOVE } from 'boardgame.io/core';
+import { INVALID_MOVE } from 'boardgame.io/dist/cjs/core.js';
 
 const STD_SUITS = ['♠', '♥', '♦', '♣'];
 const STD_RANKS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
