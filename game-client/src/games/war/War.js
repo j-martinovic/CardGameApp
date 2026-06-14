@@ -26,11 +26,11 @@ function buildShuffledDeck(ctx) {
   if (ctx && ctx.random && ctx.random.Shuffle) {
     return ctx.random.Shuffle(deck);
   }
-  // Fallback Fisher-Yates for environments without seeded random.
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
-  }
+  // // Fallback Fisher-Yates for environments without seeded random.
+  // for (let i = deck.length - 1; i > 0; i--) {
+  //   const j = Math.floor(Math.random() * (i + 1));
+  //   [deck[i], deck[j]] = [deck[j], deck[i]];
+  // }
   return deck;
 }
 
@@ -96,7 +96,7 @@ export const WarGame = {
   minPlayers: 1,
   maxPlayers: 1,
 
-  setup: (ctx) => {
+  setup: ({ ctx }) => {
     const deck = buildShuffledDeck(ctx);
     return {
       playerDeck: deck.slice(0, 26),   // player's 26 cards
@@ -114,7 +114,7 @@ export const WarGame = {
     // The only move in War: player flips their top card.
     // The bot responds immediately and the round resolves fully here.
     playCard: {
-      move: (G, ctx) => {
+      move: ({ G, ctx }) => {
         if (G.playerDeck.length === 0 || G.botDeck.length === 0) {
           return INVALID_MOVE;
         }
@@ -159,7 +159,7 @@ export const WarGame = {
   },
 
   // Game ends when one deck is empty or after 1000 rounds (safety draw).
-  endIf: (G) => {
+  endIf: ({G, ctx}) => {
     if (G.playerDeck.length === 0 && G.botDeck.length === 0) return { winner: 'draw' };
     if (G.playerDeck.length === 0) return { winner: 'bot' };
     if (G.botDeck.length === 0) return { winner: 'player' };

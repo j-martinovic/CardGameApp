@@ -62,8 +62,68 @@ export default function App() {
     setScreen('lobby');
   }
 
+
+
+  // // ── Render game screen ────────────────────────────────────────────────────
+  // if (screen === 'game' && matchCredentials) {
+  //   const commonProps = {
+  //     matchID: matchCredentials.matchID,
+  //     playerID: matchCredentials.playerID,
+  //     credentials: matchCredentials.playerCredentials,
+  //     onQuit: handleQuit,
+  //     playerName: matchCredentials.playerName,
+  //   };
+
+  //   if (currentGame === 'war') return <WarClient {...commonProps} />;
+  //   if (currentGame === 'go_fish') return <GoFishClient {...commonProps} />;
+  //   // Fallback: return to lobby
+  //   handleQuit();
+  // }
+
+  // // ── Render multiplayer lobby ──────────────────────────────────────────────
+  // if (screen === 'multiplayer') return (
+  //   <MultiplayerLobby
+  //     userId={userId}
+  //     userName={urlName || sessionStorage.getItem('mp_name') || userName}
+  //     onJoinMatch={handleJoinMatch}
+  //     onBack={() => setScreen('lobby')}
+  //   />
+  // );
+
+  // // ── Render playground ─────────────────────────────────────────────────────
+  // if (screen === 'playground') return (
+  //   <PlaygroundPage
+  //     userId={userId}
+  //     userName={urlName || sessionStorage.getItem('mp_name') || userName}
+  //     onJoinMatch={handleJoinMatch}
+  //     onBack={() => setScreen('lobby')}
+  //   />
+  // );
+
+  // // ── Render main lobby ─────────────────────────────────────────────────────
+  // return (
+  //   <Lobby
+  //     userName={urlName || userName}
+  //     onJoinMatch={handleJoinMatch}
+  //     onMultiplayer={() => setScreen('multiplayer')}
+  //     onPlayground={() => setScreen('playground')}
+  //   />
+  // );
+
   // ── Render game screen ────────────────────────────────────────────────────
-  if (screen === 'game' && matchCredentials) {
+  if (screen === 'game') {
+    // If the screen moved to game but the hook is still resolving credentials,
+    // show a quick loading block instead of crashing or falling through to Lobby.
+    if (!matchCredentials) {
+      return (
+        <div style={{ padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
+          <h3>Connecting to Game Server...</h3>
+          <p>Synchronizing match credentials...</p>
+          <button onClick={handleQuit} style={{ marginTop: '1rem' }}>Cancel</button>
+        </div>
+      );
+    }
+
     const commonProps = {
       matchID: matchCredentials.matchID,
       playerID: matchCredentials.playerID,
@@ -74,8 +134,14 @@ export default function App() {
 
     if (currentGame === 'war') return <WarClient {...commonProps} />;
     if (currentGame === 'go_fish') return <GoFishClient {...commonProps} />;
-    // Fallback: return to lobby
-    handleQuit();
+    
+    // Safe fallback inside the active game context loop
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <p>Error: Game configuration "{currentGame}" not found.</p>
+        <button onClick={handleQuit}>Return to Lobby</button>
+      </div>
+    );
   }
 
   // ── Render multiplayer lobby ──────────────────────────────────────────────

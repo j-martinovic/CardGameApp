@@ -61,7 +61,7 @@ export const GoFishGame = {
   minPlayers: 2,
   maxPlayers: 6,
 
-  setup: (ctx) => {
+  setup: ({ ctx }) => {
     const deck = buildShuffledDeck(ctx);
     const numPlayers = ctx.numPlayers;
     const cardsEach = numPlayers === 2 ? 7 : 5;
@@ -94,7 +94,7 @@ export const GoFishGame = {
 
   moves: {
     askForCards: {
-      move: (G, ctx, targetPlayerID, rank) => {
+      move: (G, ctx, { targetPlayerID, rank }) => {
         const askerID = ctx.currentPlayer;
         const asker = G.players[askerID];
         const target = G.players[String(targetPlayerID)];
@@ -154,14 +154,16 @@ export const GoFishGame = {
         }
 
         // Turn ends — no match on draw or ocean empty
-        ctx.events.endTurn();
+        // ctx.events.endTurn();
+        return { endTurn: true};
       },
       client: false,
     },
 
     passTurn: {
-      move: (G, ctx) => {
-        ctx.events.endTurn();
+      move: ( G, ctx ) => {
+        // ctx.events.endTurn();
+        return { endTurn: true };
       },
       client: false,
     },
@@ -169,7 +171,7 @@ export const GoFishGame = {
 
   turn: {
     moveLimit: undefined,
-    onBegin: (G, ctx) => {
+    onBegin: ({ G, ctx }) => {
       const player = G.players[ctx.currentPlayer];
       // If hand empty and ocean not empty, draw 5
       if (player.hand.length === 0 && G.drawPile.length > 0) {
@@ -185,7 +187,7 @@ export const GoFishGame = {
     },
   },
 
-  endIf: (G, ctx) => {
+  endIf: ({ G, ctx }) => {
     // All 13 books claimed
     if (totalBooks(G) >= 13) {
       return _determineWinner(G, ctx);
