@@ -1,0 +1,40 @@
+.discard-pile-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  position: relative;
+}
+
+.discard-pile-label {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  color: rgba(201, 168, 76, 0.6);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.discard-pile-slot {
+  width: 54px;
+  height: 76px;
+  border: 2px dashed rgba(201, 168, 76, 0.25);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.discard-pile-empty {
+  font-size: 0.62rem;
+  color: rgba(201, 168, 76, 0.35);
+  font-family: 'Lato', sans-serif;
+}
+
+.discard-pile-count {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.7rem;
+  color: rgba(201, 168, 76, 0.5);
+}
+
+.discard-pile-zone.sandbox-zone { outline: 1px dashed rgba(100, 200, 255, 0.4); position: relative; }

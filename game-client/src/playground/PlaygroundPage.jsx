@@ -1,5 +1,5 @@
 // PlaygroundPage.jsx — top-level screen for the Game Playground.
-// Screens: builder | preview | playing | library
+// Screens: builder | preview | playing | library | boardsandbox
 
 import React, { useState } from 'react';
 import { Client } from 'boardgame.io/react';
@@ -11,6 +11,7 @@ import CustomBoard from './CustomBoard';
 import GameLibrary from './GameLibrary';
 import { saveGame } from './PlaygroundAPI';
 import { createCustomGameMatch } from '../lobby/LobbyAPI';
+import GenericBoard, { defaultSandboxConfig } from '../components/GenericBoard';
 
 const BGIO_SERVER = import.meta.env.VITE_BGIO_SERVER_URL || 'http://localhost:8000';
 
@@ -49,13 +50,10 @@ export default function PlaygroundPage({ userId, userName, onJoinMatch, onBack }
     setError(''); setLoading(true);
     try {
       const gameWithId = { ...rules, gameId: `pg_${Date.now()}` };
-      // Save rules session-only so Flask returns a game_id
       await saveGame(gameWithId, userId, false, false);
-      // Create a local match using the 'custom' boardgame.io game with rules in setupData
       const numPlayers = rules.numPlayers || 1;
       const { matchID, playerID, playerCredentials } = await createCustomGameMatch(gameWithId, numPlayers, userName || 'Player');
 
-      // Build a one-off Client for this specific custom game
       const customGame = buildCustomGame(gameWithId);
       CustomClient = Client({
         game: customGame,
@@ -105,6 +103,22 @@ export default function PlaygroundPage({ userId, userName, onJoinMatch, onBack }
     );
   }
 
+  // Board sandbox screen — renders GenericBoard in sandboxMode
+  if (screen === 'boardsandbox') {
+    return (
+      <GenericBoard
+        G={{}}
+        ctx={{ currentPlayer: '0', turn: 1 }}
+        moves={{}}
+        playerID="0"
+        config={defaultSandboxConfig}
+        sandboxMode={true}
+        onQuit={() => setScreen('builder')}
+        playerName={userName || 'Player'}
+      />
+    );
+  }
+
   return (
     <div style={containerStyle}>
       <header style={{ marginBottom: 20 }}>
@@ -113,9 +127,10 @@ export default function PlaygroundPage({ userId, userName, onJoinMatch, onBack }
       </header>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
         <button style={tabStyle(screen === 'builder')} onClick={() => setScreen('builder')}>Build a Game</button>
         <button style={tabStyle(screen === 'library')} onClick={() => setScreen('library')}>Game Library</button>
+        <button style={tabStyle(screen === 'boardsandbox')} onClick={() => setScreen('boardsandbox')}>Board Preview</button>
       </div>
 
       {error && <div style={{ color: '#c88', background: '#2a0a0a', border: '1px solid #c88', borderRadius: 6, padding: '8px 14px', marginBottom: 12 }}>{error}</div>}
