@@ -91,8 +91,8 @@ function resolveRound(playerDeck, botDeck) {
 
 // ── Game definition ───────────────────────────────────────────────────────────
 
-export const WarGame = {
-  name: 'war',
+const WarGame = {
+  name: 'War',
   minPlayers: 1,
   maxPlayers: 1,
 
@@ -171,3 +171,5 @@ export const WarGame = {
     moveLimit: 1,
   },
 };
+
+export default WarGame
