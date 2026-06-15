@@ -1,0 +1,149 @@
+/* ── CenterPlayZone ─────────────────────────────────────────────────────────── */
+
+.center-play-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* ── Versus style (War) ─────────────────────────────────────────────────────── */
+
+.center-versus {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 0;
+  border-top: 1px solid rgba(201, 168, 76, 0.15);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+  min-height: 80px;
+  width: 100%;
+}
+
+.center-versus-vs {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: rgba(201, 168, 76, 0.35);
+  letter-spacing: 0.12em;
+}
+
+.round-result-badge {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 6px 18px;
+  border-radius: 20px;
+  border: 1.5px solid currentColor;
+  animation: badgePop 0.25s ease;
+}
+
+.round-result-badge.result-player {
+  color: #6fcf97;
+  border-color: rgba(111, 207, 151, 0.4);
+  background: rgba(111, 207, 151, 0.08);
+}
+
+.round-result-badge.result-bot {
+  color: #eb5757;
+  border-color: rgba(235, 87, 87, 0.4);
+  background: rgba(235, 87, 87, 0.08);
+}
+
+.round-result-badge.result-draw {
+  color: #c9a84c;
+  border-color: rgba(201, 168, 76, 0.4);
+  background: rgba(201, 168, 76, 0.06);
+}
+
+.war-badge {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f0c040;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 16px rgba(240, 192, 64, 0.7);
+  animation: warPulse 0.6s ease infinite alternate;
+}
+
+.round-counter {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.75rem;
+  color: rgba(201, 168, 76, 0.5);
+  letter-spacing: 0.1em;
+}
+
+@keyframes warPulse {
+  from { opacity: 0.85; transform: scale(1); }
+  to   { opacity: 1;    transform: scale(1.06); }
+}
+
+@keyframes badgePop {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Request style (Go Fish) ────────────────────────────────────────────────── */
+
+.center-request {
+  width: 100%;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 60px;
+}
+
+.go-fish-banner {
+  text-align: center;
+  padding: 8px 16px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 8px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.1rem;
+  color: #c9a84c;
+  animation: badgePop 0.2s ease;
+}
+
+.go-fish-draw {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.82rem;
+  color: rgba(200, 184, 154, 0.7);
+}
+
+.ask-success-banner {
+  text-align: center;
+  padding: 6px 14px;
+  background: rgba(111, 207, 151, 0.08);
+  border: 1px solid rgba(111, 207, 151, 0.3);
+  border-radius: 8px;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.88rem;
+  color: #6fcf97;
+  animation: badgePop 0.2s ease;
+}
+
+.action-log-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.action-log-entry {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(200, 184, 154, 0.7);
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sandbox */
+.center-play-zone.sandbox-zone { outline: 1px dashed rgba(100, 200, 255, 0.4); position: relative; }

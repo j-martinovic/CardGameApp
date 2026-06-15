@@ -1,0 +1,103 @@
+.action-zone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: rgba(0, 0, 0, 0.28);
+  border-top: 1px solid rgba(201, 168, 76, 0.12);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 10px;
+  position: relative;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ── Poker chip button ──────────────────────────────────────────────────────── */
+
+.action-btn {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 10px 22px;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at top, #2a1f00, #1a1300);
+  color: #c9a84c;
+  border: 2px solid #c9a84c;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.15);
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 40%;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 24px 24px 50% 50%;
+  pointer-events: none;
+}
+
+.action-btn:not(.action-btn-disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(201, 168, 76, 0.25), inset 0 1px 0 rgba(201,168,76,0.2);
+  background: radial-gradient(ellipse at top, #3a2a00, #261c00);
+}
+
+.action-btn:not(.action-btn-disabled):active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4), inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.action-btn-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: rgba(201, 168, 76, 0.3);
+}
+
+/* ── Quit button ────────────────────────────────────────────────────────────── */
+
+.action-quit-btn {
+  background: transparent;
+  border: 1.5px solid rgba(201, 168, 76, 0.3);
+  border-radius: 8px;
+  color: rgba(201, 168, 76, 0.6);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  padding: 6px 18px;
+  cursor: pointer;
+  transition: border-color 0.18s, color 0.18s;
+}
+
+.action-quit-btn:hover {
+  border-color: #c9a84c;
+  color: #c9a84c;
+}
+
+/* ── Sandbox mode: scrollable grid of all handlers ──────────────────────────── */
+
+.sandbox-action .action-buttons {
+  max-height: 120px;
+  overflow-y: auto;
+  flex-wrap: wrap;
+}
+
+.sandbox-action .action-btn {
+  font-size: 0.65rem;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0;
+}
+
+.action-zone.sandbox-zone { outline: 1px dashed rgba(100, 200, 255, 0.4); }

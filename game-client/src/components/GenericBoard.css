@@ -1,0 +1,220 @@
+/* ── GenericBoard — retro poker table aesthetic ───────────────────────────── */
+
+.generic-board {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Lato', sans-serif;
+  /* Wood grain outer border */
+  box-shadow: inset 0 0 0 8px #2a1600, inset 0 0 0 10px rgba(201,168,76,0.15);
+}
+
+/* ── Felt texture background (theme-retro-poker) ────────────────────────────── */
+
+.theme-retro-poker {
+  background:
+    radial-gradient(ellipse at center, #2d5a27 0%, #1a3d15 55%, #0f2310 100%);
+}
+
+/* Subtle felt grain overlay via pseudo-element */
+.theme-retro-poker::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.5) 2px,
+      rgba(255,255,255,0.5) 3px
+    );
+  z-index: 0;
+}
+
+/* ── Layout: versus (War — vertical stack) ──────────────────────────────────── */
+
+.layout-versus .board-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.layout-versus .board-center-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.layout-versus .board-center-row .center-play-zone {
+  flex: 1;
+}
+
+/* ── Layout: hand-focused (GoFish — more space for player hand) ─────────────── */
+
+.layout-hand-focused .board-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.layout-hand-focused .board-center-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  min-height: 80px;
+}
+
+.layout-hand-focused .board-center-row .center-play-zone {
+  flex: 1;
+}
+
+.layout-hand-focused .player-hand-zone {
+  flex: 1;
+}
+
+/* ── Layout: table (future multi-player around a table) ─────────────────────── */
+
+.layout-table .board-content {
+  display: grid;
+  grid-template-areas:
+    "opp opp opp"
+    ". center ."
+    "player player player";
+  grid-template-rows: auto 1fr auto;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Board content wrapper ──────────────────────────────────────────────────── */
+
+.board-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+/* ── Sandbox sidebar ────────────────────────────────────────────────────────── */
+
+.sandbox-sidebar {
+  width: 240px;
+  min-width: 240px;
+  background: rgba(5, 5, 5, 0.92);
+  border-right: 1.5px solid rgba(100, 200, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 12px;
+  overflow-y: auto;
+  z-index: 20;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sandbox-sidebar-title {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.75rem;
+  color: rgba(100, 200, 255, 0.7);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(100, 200, 255, 0.15);
+}
+
+.sandbox-zone-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sandbox-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  color: rgba(200, 220, 255, 0.7);
+}
+
+.sandbox-toggle-row input[type="checkbox"] {
+  accent-color: rgba(100, 200, 255, 0.8);
+  cursor: pointer;
+}
+
+.sandbox-json {
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  color: rgba(100, 200, 100, 0.7);
+  background: rgba(0, 20, 0, 0.5);
+  border: 1px solid rgba(100, 200, 100, 0.15);
+  border-radius: 6px;
+  padding: 8px;
+  overflow-x: auto;
+  white-space: pre;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  flex-shrink: 0;
+}
+
+.sandbox-sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.sandbox-btn {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.72rem;
+  background: rgba(100, 200, 255, 0.1);
+  color: rgba(100, 200, 255, 0.8);
+  border: 1px solid rgba(100, 200, 255, 0.25);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.sandbox-btn:hover { background: rgba(100, 200, 255, 0.2); }
+
+.sandbox-btn-preview {
+  background: rgba(100, 200, 100, 0.1);
+  color: rgba(100, 200, 100, 0.8);
+  border-color: rgba(100, 200, 100, 0.25);
+}
+
+.sandbox-btn-preview:hover { background: rgba(100, 200, 100, 0.2); }
+
+/* ── Shared sandbox zone overlay styles (used in every zone CSS) ────────────── */
+
+.sandbox-label {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 0.6rem;
+  font-family: 'Courier New', monospace;
+  color: rgba(100, 200, 255, 0.7);
+  background: rgba(0, 0, 0, 0.65);
+  padding: 1px 5px;
+  border-radius: 3px;
+  z-index: 100;
+  pointer-events: none;
+  white-space: nowrap;
+}

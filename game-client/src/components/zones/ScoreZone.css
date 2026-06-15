@@ -1,0 +1,95 @@
+.score-zone {
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(201, 168, 76, 0.12);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.12);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.score-header {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.7rem;
+  color: rgba(201, 168, 76, 0.5);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  min-width: 52px;
+}
+
+/* ── Deck score layout (War) ────────────────────────────────────────────────── */
+
+.score-deck-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.score-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: color 0.2s;
+}
+
+.score-entry.score-leading .score-value {
+  color: #6fcf97;
+}
+
+.score-value {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #c9a84c;
+  line-height: 1;
+}
+
+.score-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.65rem;
+  color: rgba(200, 184, 154, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.score-divider {
+  color: rgba(201, 168, 76, 0.25);
+  font-size: 1.1rem;
+}
+
+/* ── Player score layout (Go Fish) ─────────────────────────────────────────── */
+
+.score-player-list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.score-player-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.score-player-entry.score-me .score-player-label {
+  color: #c9a84c;
+}
+
+.score-player-label {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.7rem;
+  color: rgba(200, 184, 154, 0.55);
+  letter-spacing: 0.06em;
+}
+
+.score-player-value {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.82rem;
+  color: rgba(200, 184, 154, 0.8);
+}
+
+.score-zone.sandbox-zone { outline: 1px dashed rgba(100, 200, 255, 0.4); }

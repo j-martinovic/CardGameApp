@@ -1,0 +1,199 @@
+/* ── OpponentHandZone ───────────────────────────────────────────────────────── */
+
+.opponent-hand-zone {
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* ── Stacked layout (War-style single bot) ─────────────────────────────────── */
+
+.opp-stacked {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 20px 0 24px;
+  border-radius: 16px 16px 0 0;
+  transition: background 0.3s;
+}
+
+.opp-stacked.result-win  { background: rgba(39, 174, 96, 0.08); }
+.opp-stacked.result-loss { background: rgba(192, 57, 43, 0.08); }
+.opp-stacked.result-draw { background: rgba(201, 168, 76, 0.06); }
+
+.opp-stacked-label {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.85rem;
+  color: #e8c9c9;
+  letter-spacing: 0.08em;
+  text-align: center;
+  min-width: 64px;
+}
+
+.opp-deck-pile {
+  position: relative;
+  width: 72px;
+  height: 100px;
+}
+
+.opp-play-slot {
+  width: 72px;
+  height: 100px;
+  border: 2px dashed rgba(201, 168, 76, 0.25);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.opp-play-slot.has-card { border-color: transparent; }
+
+/* ── Shared flip animation (reuse from PlayerArea pattern) ─────────────────── */
+
+.play-flip-wrap {
+  width: 72px;
+  height: 100px;
+  perspective: 700px;
+}
+
+.play-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.38s ease-in-out;
+}
+
+.play-flip-wrap.flipped .play-flip-inner {
+  transform: rotateY(180deg);
+}
+
+.play-flip-back,
+.play-flip-front {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+}
+
+.play-flip-front {
+  transform: rotateY(180deg);
+}
+
+/* ── Shared deck stacking shadows ──────────────────────────────────────────── */
+
+.deck-shadow-mid {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 0 #1a1a80, 3px 3px 0 1px rgba(201,168,76,0.15);
+  pointer-events: none;
+}
+
+.deck-shadow-deep {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  box-shadow: 6px 6px 0 0 #1a1a80, 6px 6px 0 1px rgba(201,168,76,0.1);
+  pointer-events: none;
+}
+
+.deck-empty {
+  width: 72px;
+  height: 100px;
+  border: 2px dashed rgba(201,168,76,0.3);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: rgba(201,168,76,0.4);
+  font-family: 'Lato', sans-serif;
+}
+
+.deck-count {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  color: rgba(201,168,76,0.7);
+  white-space: nowrap;
+}
+
+/* ── Fan layout (GoFish-style multiple opponents) ──────────────────────────── */
+
+.opp-fan-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+}
+
+.opp-fan-opponent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: border-color 0.2s;
+}
+
+.opp-fan-opponent.selected {
+  border-color: #c9a84c;
+  background: rgba(201, 168, 76, 0.07);
+}
+
+.opp-fan-select-btn {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(200, 184, 154, 0.7);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(201, 168, 76, 0.25);
+  border-radius: 6px;
+  padding: 5px 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.opp-fan-select-btn.active {
+  background: #c9a84c;
+  color: #0a0a0a;
+  border-color: #c9a84c;
+}
+
+.opp-meta {
+  font-family: 'Lato', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.opp-fan-cards {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 200px;
+}
+
+.opp-empty-hand {
+  font-size: 0.72rem;
+  color: rgba(201, 168, 76, 0.35);
+  font-family: 'Lato', sans-serif;
+}
+
+/* Sandbox */
+.opponent-hand-zone.sandbox-zone { outline: 1px dashed rgba(100, 200, 255, 0.4); }
