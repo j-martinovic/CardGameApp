@@ -1,4 +1,5 @@
 import './Home.css'
+import HeaderBanner from './StaticVisuals'
 
 // ── Sub-components ────────────────────────────────────────────────────────
 
@@ -54,52 +55,13 @@ const GamePanel = ({name, description, players, cards, difficulty, onPlayGame}) 
 
 // ── Main component ────────────────────────────────────────────────────────
 
-const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
+const HomeScreen = ({ openLogin, signOut, user, onPlay }) => {
     return (
         <div className="home-screen">
 
             {/* ── Header bar ─────────────────────────────────────────── */}
-            <header className="home-header">
-                <div className="home-header-brand">
-                    <span className="home-brand-suit" aria-hidden="true">♠</span>
-                    <span className="home-brand-name">Royal Table</span>
-                    <span className="home-brand-suit" aria-hidden="true">♥</span>
-                </div>
-
-                <nav className="home-header-nav">
-                    {user.loggedIn ? (
-                        <>
-                            <span className="home-username">
-                                <span className="home-username-chip" aria-hidden="true">♦</span>
-                                {user.userName}
-                                <span className="home-username-chip" aria-hidden="true">♣</span>
-                            </span>
-                            <button
-                                onClick={signOut}
-                                className="header-btn header-btn--outline"
-                            >
-                                Sign Out
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <button
-                                onClick={() => openLogin(false)}
-                                className="header-btn header-btn--outline"
-                            >
-                                Login
-                            </button>
-                            <button
-                                onClick={() => openLogin(true)}
-                                className="header-btn header-btn--gold"
-                            >
-                                Sign Up
-                            </button>
-                        </>
-                    )}
-                </nav>
-            </header>
-
+            <HeaderBanner user={user} openLogin={openLogin} signOut={signOut}/>
+            
             {/* ── Hero welcome ───────────────────────────────────────── */}
             <main className="home-main">
                 <section className="home-hero">
@@ -143,7 +105,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                             </div>
                         </div>
                         <button
-                            onClick={onPlayWar}
+                            onClick={onPlay}
                             className="game-play-btn"
                         >
                             Play War
@@ -156,7 +118,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                         players="5"
                         cards="53"
                         difficulty={"Hard"}
-                        onPlayGame={onPlayWar}
+                        onPlayGame={onPlay}
                     />                    
                     
                     <GamePanel 
@@ -165,7 +127,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                         players="4"
                         cards="52"
                         difficulty={"Medium"}
-                        onPlayGame={onPlayWar}
+                        onPlayGame={onPlay}
                     />                    
                     
                     <GamePanel 
@@ -174,7 +136,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                         players="4"
                         cards="52"
                         difficulty={"Easy"}
-                        onPlayGame={onPlayWar}
+                        onPlayGame={onPlay}
                     />                     
                     <GamePanel 
                         name="Billy's Game" 
@@ -182,7 +144,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                         players="4-6"
                         cards="54"
                         difficulty={"Medium"}
-                        onPlayGame={onPlayWar}
+                        onPlayGame={onPlay}
                     />                    
                     <GamePanel 
                         name="Spades" 
@@ -190,7 +152,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                         players="4"
                         cards="52"
                         difficulty={"Medium"}
-                        onPlayGame={onPlayWar}
+                        onPlayGame={onPlay}
                     />                    
                     <GamePanel 
                         name="Bura" 
@@ -198,7 +160,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                         players="2"
                         cards="40"
                         difficulty={"Easy"}
-                        onPlayGame={onPlayWar}
+                        onPlayGame={onPlay}
                     />
 
                     <GamePanel 
@@ -207,7 +169,7 @@ const HomeScreen = ({ openLogin, signOut, user, onPlayWar }) => {
                         players="3"
                         cards="37"
                         difficulty={"Hard"}
-                        onPlayGame={onPlayWar}
+                        onPlayGame={onPlay}
                     />
 
                     {/* More games — coming soon placeholder */}

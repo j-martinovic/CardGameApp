@@ -4,6 +4,7 @@ import HomeScreen from './Home'
 import LoginScreen from './Login'
 import WarGame from './War'
 import CardFace from './assets/cards/CardFace'
+import LobbyScreen from './LobbyComponents/LobbyScreen.jsx'
 // NOTE: A visual asset gallery exists at ./components/AssetPreview.jsx
 // To view all card/chip/avatar/table SVGs and animation demos, temporarily
 // replace the JSX return below with: <AssetPreview />
@@ -16,17 +17,19 @@ function App() {
   const [screen, setScreen] = useState('home')
   const [signUp, setSignUp]   = useState(false)
   const [userInfo, setUserInfo] = useState({})
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   // ── Auth ──────────────────────────────────────────────────────────────────
 
   const launchLogin = (isSignUp) => {
     setSignUp(isSignUp)
-    setScreen('loggingIn')
+    setIsLoggingIn(true)
   }
 
-  const returnHome = (user) => {
+  const returnHome = (user, screen='home') => {
     setUserInfo(user || {})
-    setScreen('home')
+    setIsLoggingIn(false)
+    setScreen(screen)
   }
 
   const signOut = async () => {
@@ -46,33 +49,42 @@ function App() {
       console.error('Could not reach the server during logout.')
     } finally {
       setUserInfo({})
-      setScreen('home')
     }
   }
 
   // ── Navigation ────────────────────────────────────────────────────────────
 
+  const launchLobby = () => setScreen('lobby')
   const launchWar  = () => setScreen('war')
   const quitWar    = () => setScreen('home')
 
   // ── Render ────────────────────────────────────────────────────────────────
 
-  if (screen === 'loggingIn') {
-    return <LoginScreen returnHome={returnHome} signUp={signUp} />
-  }
-
-  if (screen === 'war') {
+  if (isLoggingIn) {
+    return <LoginScreen returnHome={(user) => {returnHome(user, screen)}} signUp={signUp} />
+  } else if (screen === 'war') {
     return <WarGame user={userInfo} onQuit={quitWar} />
+  } else if (screen === "home") {
+    return (
+      <HomeScreen
+        openLogin={launchLogin}
+        signOut={signOut}
+        user={userInfo}
+        onPlay={launchLobby}
+      />
+    )
+  } else if (screen === 'lobby') {
+    return (
+      <LobbyScreen
+        userInfo={userInfo}
+        openLogin={launchLogin}
+        signOut={signOut}
+        returnHome={returnHome}
+     />
+    )
   }
 
-  return (
-     <HomeScreen
-      openLogin={launchLogin}
-      signOut={signOut}
-      user={userInfo}
-      onPlayWar={launchWar}
-    />
-  )
+
 }
 
 export default App
