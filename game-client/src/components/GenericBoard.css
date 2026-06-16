@@ -218,3 +218,27 @@
   pointer-events: none;
   white-space: nowrap;
 }
+
+/* ── Interactive zone rows (drag/drop card primitives) ───────────────────── */
+
+.zone-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+}
+
+.zone-row-top { flex: 0 0 auto; }
+.zone-row-bottom { flex: 0 0 auto; margin-top: auto; }
+
+.zone-row-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  flex: 1;
+}
+
+.zone-row .hand { margin: 0 6px; }
