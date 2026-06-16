@@ -1,0 +1,253 @@
+/* ── Card primitive system — shared by Card, Hand, Deck, DrawPile, Pile, PlayZone, CardSlot ── */
+
+:root {
+  --card-width: 80px;
+  --card-height: 112px;
+  --card-radius: 8px;
+  --card-glow: 0 0 14px rgba(255, 215, 0, 0.75);
+  --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  --card-drag-opacity: 0.45;
+  --card-selected-border: 3px solid #ffe066;
+  --zone-empty-border: 2px dashed rgba(255, 255, 255, 0.3);
+  --zone-drop-bg: rgba(0, 200, 100, 0.2);
+  --zone-drop-border: 2px solid #00c864;
+}
+
+/* ── Card ──────────────────────────────────────────────────────────────────── */
+
+.card {
+  display: inline-block;
+  border-radius: var(--card-radius);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  box-shadow: var(--card-shadow);
+}
+
+.card:focus-visible {
+  outline: 2px solid #ffe066;
+  outline-offset: 2px;
+}
+
+.card--hovered {
+  transform: translateY(-6px);
+  box-shadow: var(--card-glow);
+}
+
+.card--selected {
+  transform: translateY(-12px);
+  border: var(--card-selected-border);
+  box-shadow: var(--card-glow);
+}
+
+.card--dragging {
+  opacity: var(--card-drag-opacity);
+}
+
+.card--disabled {
+  filter: saturate(0.4);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── Zone drop-target highlight (shared across Pile / PlayZone / CardSlot) ──── */
+
+.zone--drop-active {
+  background: var(--zone-drop-bg) !important;
+  border: var(--zone-drop-border) !important;
+}
+
+/* ── Hand ──────────────────────────────────────────────────────────────────── */
+
+.hand {
+  display: flex;
+  align-items: flex-end;
+  padding: 8px 4px;
+}
+
+.hand .card { margin-left: -18px; }
+.hand .card:first-child { margin-left: 0; }
+.hand:hover .card { margin-left: -8px; }
+
+.hand--disabled { opacity: 0.6; }
+
+/* ── Deck / DrawPile ──────────────────────────────────────────────────────── */
+
+.deck {
+  position: relative;
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: var(--card-radius);
+  background: #1a1a6e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease;
+}
+
+.deck::before,
+.deck::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: var(--card-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.deck::before { top: -3px; left: -3px; width: 100%; height: 100%; z-index: -1; }
+.deck::after  { top: -6px; left: -6px; width: 100%; height: 100%; z-index: -2; }
+
+.deck--clickable { cursor: pointer; }
+.deck--clickable:hover { transform: translateY(-4px); }
+
+.deck-empty-label {
+  border: var(--zone-empty-border);
+  border-radius: var(--card-radius);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+.deck-count-badge {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  background: #000;
+  color: #ffe066;
+  border: 1px solid #ffe066;
+  border-radius: 999px;
+  min-width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0 4px;
+}
+
+/* ── Pile ─────────────────────────────────────────────────────────────────── */
+
+.pile-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+.pile-label { font-size: 0.7rem; opacity: 0.7; }
+
+.pile {
+  position: relative;
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: var(--card-radius);
+  background: #2a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s ease, border 0.12s ease;
+}
+
+.pile::before,
+.pile::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: var(--card-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pile::before { top: -3px; left: -3px; width: 100%; height: 100%; z-index: -1; }
+.pile::after  { top: -6px; left: -6px; width: 100%; height: 100%; z-index: -2; }
+
+.pile--hovered .card { transform: translateY(-6px); box-shadow: var(--card-glow); }
+
+.pile-empty {
+  border: var(--zone-empty-border);
+  border-radius: var(--card-radius);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+.pile-count-badge {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  background: #000;
+  color: #ffe066;
+  border: 1px solid #ffe066;
+  border-radius: 999px;
+  min-width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0 4px;
+}
+
+/* ── PlayZone ─────────────────────────────────────────────────────────────── */
+
+.play-zone {
+  min-width: var(--card-width);
+  min-height: var(--card-height);
+  border-radius: var(--card-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  transition: background 0.12s ease, border 0.12s ease, box-shadow 0.15s ease;
+}
+
+.play-zone--empty {
+  border: var(--zone-empty-border);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.8rem;
+}
+
+.play-zone--occupied {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.play-zone-cards { display: flex; gap: 4px; }
+
+.play-zone-label {
+  position: absolute;
+  top: -18px;
+  font-size: 0.7rem;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.play-zone { position: relative; }
+
+.play-zone--pulse {
+  animation: play-zone-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes play-zone-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(0, 200, 100, 0.4); }
+  50% { box-shadow: 0 0 16px rgba(0, 200, 100, 0.85); }
+}
+
+/* ── CardSlot ─────────────────────────────────────────────────────────────── */
+
+.card-slot {
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: var(--card-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-slot--empty {
+  border: var(--zone-empty-border);
+}
+
+.card-slot-placeholder { width: 100%; height: 100%; }

@@ -1,7 +1,7 @@
 import React from 'react';
 import './StatusZone.css';
 
-export default function StatusZone({ G, ctx, playerID, config = {}, sandboxMode, sandboxLabel }) {
+export default function StatusZone({ G, ctx, playerID, config = {}, sandboxMode, sandboxLabel, onEndTurn, canEndTurn, onQuit }) {
   const currentPlayer = ctx?.currentPlayer ?? '?';
   const phase = ctx?.phase ?? 'playing';
   const turn = ctx?.turn ?? 0;
@@ -24,6 +24,14 @@ export default function StatusZone({ G, ctx, playerID, config = {}, sandboxMode,
         )}
         {config.timer?.enabled && (
           <span className="status-timer">⏱ {config.timer.seconds ?? 30}s</span>
+        )}
+        {onEndTurn && (
+          <button className="status-end-turn-btn" onClick={onEndTurn} disabled={!canEndTurn}>
+            End Turn
+          </button>
+        )}
+        {onQuit && (
+          <button className="status-quit-btn" onClick={onQuit} type="button">Quit</button>
         )}
       </div>
     </div>

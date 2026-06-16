@@ -53,6 +53,7 @@ import { useTurnRound }        from '../shared_handlers/useTurnRound';
 import { usePlayerActions }    from '../shared_handlers/usePlayerActions';
 import { useSocial }           from '../shared_handlers/useSocial';
 import { useScoring }          from '../shared_handlers/useScoring';
+import { useBoardEventHandlers } from '../hooks/useBoardEventHandlers';
 
 import StatusZone       from './zones/StatusZone';
 import OpponentHandZone from './zones/OpponentHandZone';
@@ -64,6 +65,8 @@ import ScoreZone        from './zones/ScoreZone';
 import ChatZone         from './zones/ChatZone';
 import ActionZone       from './zones/ActionZone';
 import GameResultZone   from './zones/GameResultZone';
+import ZoneLayout       from './ZoneLayout';
+import { buildDefaultInteractiveZones, withPlaceholderData } from './zoneLayoutDefaults';
 
 import './GenericBoard.css';
 
@@ -81,13 +84,15 @@ export const defaultSandboxConfig = {
     chat:         { enabled: true },
     action:       { enabled: true },
   },
+  // The only remaining button — every card action (play/draw/discard/sort) is a
+  // physical drag/click interaction handled by ZoneLayout + useBoardEventHandlers.
   actions: [
-    { label: 'Play Card',   handler: 'playCard',   phase: 'any' },
-    { label: 'Draw Card',   handler: 'drawCard',   phase: 'any' },
-    { label: 'End Turn',    handler: 'endTurn',    phase: 'any' },
-    { label: 'Sort Hand',   handler: 'sortHand',   phase: 'any' },
-    { label: 'Declare Win', handler: 'declareWin', phase: 'any' },
+    { label: 'End Turn', handler: 'endTurn', phase: 'any' },
   ],
+  // Drives the zero-config interactive board: when true, GenericBoard builds a
+  // default seat layout (Hand/PlayZone/DrawPile primitives) sized to ctx.numPlayers
+  // instead of rendering the legacy named zone components.
+  useDefaultInteractiveZones: true,
   timer: { enabled: false },
   moveOverrides: {},
 };
@@ -192,6 +197,37 @@ export default function GenericBoard({
   // Props shared by every zone
   const zp = { G, ctx, handlers, playerID, isAnimating, setAnimating: setIsAnimating, selection, setSelection, sandboxMode: sandboxMode && !sandboxPreview };
 
+  // ── Interactive zones (drag/drop card primitives — replaces button-driven actions) ──
+  const interactiveZonesConfig = effectiveConfig.interactiveZones
+    ? (typeof effectiveConfig.interactiveZones === 'function'
+        ? effectiveConfig.interactiveZones(ctx, playerID)
+        : effectiveConfig.interactiveZones)
+    : effectiveConfig.useDefaultInteractiveZones
+      ? buildDefaultInteractiveZones(ctx?.numPlayers, playerID ?? '0')
+      : null;
+
+  // Raw sandbox (zone-toggle config builder) keeps the legacy zone components so
+  // its toggles still mean something; everything else (real games, Preview Mode)
+  // gets the interactive board when the config opts in.
+  const renderInteractive = !zp.sandboxMode && !!interactiveZonesConfig;
+
+  // Per-game configs can provide transformG to flatten nested G shapes (e.g. Go Fish's
+  // G.players[id].hand) into the flat G[zone.id] form that ZoneLayout expects.
+  const transformedG = effectiveConfig.transformG
+    ? effectiveConfig.transformG(G, ctx, playerID)
+    : G;
+  const boardG = interactiveZonesConfig
+    ? withPlaceholderData(transformedG, interactiveZonesConfig.all)
+    : transformedG;
+
+  const eventHandlers = useBoardEventHandlers(
+    { G: boardG, ctx, moves, playerID },
+    { handlers, moveMap: effectiveConfig.moveMap },
+  );
+
+  // When endTurnEnabled is explicitly false (e.g. War auto-advances turns), hide the HUD button.
+  const showEndTurn = effectiveConfig.endTurnEnabled !== false;
+
   // ── Sidebar live JSON for sandbox ─────────────────────────────────────────
   function buildSandboxExport() {
     const zones = {};
@@ -237,47 +273,80 @@ export default function GenericBoard({
 
       {/* ── Board content ────────────────────────────────────────────────── */}
       <div className="board-content">
-        {/* Status bar — always rendered */}
-        <StatusZone {...zp} config={{ ...zoneConfig('status'), roundCountField: effectiveConfig.zones?.centerPlay?.roundCountField || effectiveConfig.zones?.playerHand?.roundCountField }} sandboxLabel="StatusZone" />
+        {/* Status bar — always rendered. Hosts the sole remaining button (End Turn) for the interactive board. */}
+        <StatusZone
+          {...zp}
+          config={{ ...zoneConfig('status'), roundCountField: effectiveConfig.zones?.centerPlay?.roundCountField || effectiveConfig.zones?.playerHand?.roundCountField }}
+          sandboxLabel="StatusZone"
+          onEndTurn={renderInteractive && showEndTurn ? eventHandlers.handleEndTurn : undefined}
+          canEndTurn={renderInteractive && showEndTurn ? (!ctx?.currentPlayer || ctx.currentPlayer === playerID) : undefined}
+          onQuit={renderInteractive ? onQuit : undefined}
+        />
 
-        {/* Opponent hand zone */}
-        {zoneEnabled('opponentHand') && (
-          <OpponentHandZone {...zp} config={zoneConfig('opponentHand')} sandboxLabel="OpponentHandZone" />
-        )}
+        {renderInteractive ? (
+          <>
+            <div className="zone-row zone-row-top">
+              <ZoneLayout zones={interactiveZonesConfig.top} G={boardG} playerID={playerID} eventHandlers={eventHandlers} />
+            </div>
 
-        {/* Center row: draw pile · center play · discard pile */}
-        <div className="board-center-row">
-          {zoneEnabled('drawPile') && (
-            <DrawPileZone {...zp} config={zoneConfig('drawPile')} sandboxLabel="DrawPileZone" />
-          )}
+            <div className="board-center-row zone-row-center">
+              <ZoneLayout zones={interactiveZonesConfig.center} G={boardG} playerID={playerID} eventHandlers={eventHandlers} />
+            </div>
 
-          {zoneEnabled('centerPlay') && (
-            <CenterPlayZone {...zp} config={zoneConfig('centerPlay')} sandboxLabel="CenterPlayZone" />
-          )}
+            {zoneEnabled('score') && (
+              <ScoreZone {...zp} config={zoneConfig('score')} sandboxLabel="ScoreZone" />
+            )}
 
-          {zoneEnabled('discardPile') && (
-            <DiscardPileZone {...zp} config={zoneConfig('discardPile')} sandboxLabel="DiscardPileZone" />
-          )}
-        </div>
+            <div className="zone-row zone-row-bottom">
+              <ZoneLayout zones={interactiveZonesConfig.bottom} G={boardG} playerID={playerID} eventHandlers={eventHandlers} />
+            </div>
 
-        {/* Score zone */}
-        {zoneEnabled('score') && (
-          <ScoreZone {...zp} config={zoneConfig('score')} sandboxLabel="ScoreZone" />
-        )}
+            {zoneEnabled('chat') && (
+              <ChatZone {...zp} config={zoneConfig('chat')} sandboxLabel="ChatZone" />
+            )}
+          </>
+        ) : (
+          <>
+            {/* Opponent hand zone */}
+            {zoneEnabled('opponentHand') && (
+              <OpponentHandZone {...zp} config={zoneConfig('opponentHand')} sandboxLabel="OpponentHandZone" />
+            )}
 
-        {/* Player hand zone */}
-        {zoneEnabled('playerHand') && (
-          <PlayerHandZone {...zp} config={zoneConfig('playerHand')} sandboxLabel="PlayerHandZone" />
-        )}
+            {/* Center row: draw pile · center play · discard pile */}
+            <div className="board-center-row">
+              {zoneEnabled('drawPile') && (
+                <DrawPileZone {...zp} config={zoneConfig('drawPile')} sandboxLabel="DrawPileZone" />
+              )}
 
-        {/* Action bar */}
-        {zoneEnabled('action') && (
-          <ActionZone {...zp} config={effectiveConfig} onQuit={onQuit} sandboxLabel="ActionZone" />
-        )}
+              {zoneEnabled('centerPlay') && (
+                <CenterPlayZone {...zp} config={zoneConfig('centerPlay')} sandboxLabel="CenterPlayZone" />
+              )}
 
-        {/* Chat — positioned fixed, always check config */}
-        {zoneEnabled('chat') && (
-          <ChatZone {...zp} config={zoneConfig('chat')} sandboxLabel="ChatZone" />
+              {zoneEnabled('discardPile') && (
+                <DiscardPileZone {...zp} config={zoneConfig('discardPile')} sandboxLabel="DiscardPileZone" />
+              )}
+            </div>
+
+            {/* Score zone */}
+            {zoneEnabled('score') && (
+              <ScoreZone {...zp} config={zoneConfig('score')} sandboxLabel="ScoreZone" />
+            )}
+
+            {/* Player hand zone */}
+            {zoneEnabled('playerHand') && (
+              <PlayerHandZone {...zp} config={zoneConfig('playerHand')} sandboxLabel="PlayerHandZone" />
+            )}
+
+            {/* Action bar */}
+            {zoneEnabled('action') && (
+              <ActionZone {...zp} config={effectiveConfig} onQuit={onQuit} sandboxLabel="ActionZone" />
+            )}
+
+            {/* Chat — positioned fixed, always check config */}
+            {zoneEnabled('chat') && (
+              <ChatZone {...zp} config={zoneConfig('chat')} sandboxLabel="ChatZone" />
+            )}
+          </>
         )}
 
         {/* Game result overlay — always rendered, visible only when gameover */}
