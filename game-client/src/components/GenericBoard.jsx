@@ -216,9 +216,11 @@ export default function GenericBoard({
   const transformedG = effectiveConfig.transformG
     ? effectiveConfig.transformG(G, ctx, playerID)
     : G;
+  console.log(transformedG)
   const boardG = interactiveZonesConfig
     ? withPlaceholderData(transformedG, interactiveZonesConfig.all)
     : transformedG;
+  console.log(boardG)
 
   const eventHandlers = useBoardEventHandlers(
     { G: boardG, ctx, moves, playerID },

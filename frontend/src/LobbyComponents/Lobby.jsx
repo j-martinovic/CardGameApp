@@ -52,8 +52,9 @@ export default function LobbyDashboard({
     };
 
     const onCreateLobby = async (privateRoom=false, numPlayers=5) => {
+        console.log({createType, numPlayers})
         handleCreateLobby(createType, numPlayers, privateRoom)
-        onLoadAllGames(selectedFilter)
+        // onLoadAllGames(selectedFilter)
     }
 
 

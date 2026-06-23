@@ -17,7 +17,15 @@ export default function Card({
   height = 112,
 }) {
   const { id, rank, suit, faceUp = true } = cardData || {};
+  console.log(cardData)
+  console.log(rank)
+  console.log(suit)
+  console.log(faceUp)
 
+  // const id = rank + suit
+  // rank = id.slice(0)
+  // suit = id.slice(-1)
+  console.log(suit)
   const { dragHandlers, hoverHandlers, isDragging, isHovered } = useCardInteraction({
     cardId: id,
     sourceZoneId,

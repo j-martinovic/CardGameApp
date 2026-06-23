@@ -1,3 +1,7 @@
+
+
+
+
 export const game1 = {
     name: "Mighty",
     setup: ({ctx, }) => {},

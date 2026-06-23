@@ -55,7 +55,7 @@ function App() {
   // ── Navigation ────────────────────────────────────────────────────────────
 
   const launchLobby = () => setScreen('lobby')
-  const launchWar  = () => setScreen('war')
+  const launchWar  = () => setScreen('lobby')
   const quitWar    = () => setScreen('home')
 
   // ── Render ────────────────────────────────────────────────────────────────

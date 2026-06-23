@@ -11,7 +11,7 @@ import { INVALID_MOVE } from 'boardgame.io/dist/cjs/core.js';
 // ── Deck helpers ──────────────────────────────────────────────────────────────
 
 const SUITS = ['♠', '♥', '♦', '♣'];
-const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
 const RANK_VALUES = Object.fromEntries(RANKS.map((r, i) => [r, i + 2]));
 
 function buildShuffledDeck(ctx) {

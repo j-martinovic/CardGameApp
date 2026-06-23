@@ -36,7 +36,10 @@ export default function ZoneLayout({ zones = [], G = {}, playerID, eventHandlers
       {zones.map((zone) => {
         const zoneData = G?.[zone.id];
         const abstractType = ZONE_TYPE_ABSTRACT[zone.type];
-
+        {console.log("---")}
+        {console.log(zone.id)}
+        {console.log("---")}
+        console.log(zone.type)
         switch (zone.type) {
           case 'Hand': {
             const hand = (
@@ -67,6 +70,7 @@ export default function ZoneLayout({ zones = [], G = {}, playerID, eventHandlers
                     }
                   }}
                 >
+                  {console.log("RENDERING")}
                   {hand}
                 </div>
               );

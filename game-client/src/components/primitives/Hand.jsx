@@ -35,6 +35,7 @@ export default function Hand({
     <div className={`hand ${disabled ? 'hand--disabled' : ''}`} aria-label={isOwner ? 'Your hand' : 'Opponent hand'}>
       {cards.map((card) => (
         <div key={card.id} onKeyDownCapture={(e) => handleKeyDownCapture(e, card.id)}>
+          {console.log(card)}
           <Card
             cardData={{ ...card, faceUp: isOwner }}
             sourceZoneId={zoneId}

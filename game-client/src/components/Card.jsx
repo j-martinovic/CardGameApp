@@ -2,7 +2,7 @@
 import React from 'react';
 import './Card.css';
 
-const RED_SUITS = new Set(['♥', '♦']);
+const RED_SUITS = new Set(['H', 'D']);
 
 /**
  * Card({ rank, suit, faceUp, width, height, className })
@@ -10,7 +10,40 @@ const RED_SUITS = new Set(['♥', '♦']);
  * Renders a single playing card face-up or face-down.
  * When faceUp is false, renders the blue diamond back pattern.
  */
-export default function Card({ rank = 'A', suit = '♠', faceUp = true, width = 80, height = 112, className = '' }) {
+export default function Card({ rank = 'A', suit = 'S', faceUp = true, width = 80, height = 112, className = '' }) {
+
+// var suit_ = "C"
+
+// if (suit === "♠") {
+//   suit_ = "S"
+// } else if (suit === "♥") {
+//   suit_ = "H"
+// } else if (suit === "♦") {
+//   suit_ = "D"
+// }
+
+function CardFace({ rank = 'A', suit = 'S', width = 100, height = 140 }) {
+ 
+  const imgUrl = new URL(`../../../frontend/src/assets/cards/cards_good/${rank}${suit}.svg`, import.meta.url).href;
+
+  return (
+      <img
+        src={imgUrl}
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        /* 'xMidYMid meet' ensures that your card asset preserves its 
+          original design proportions perfectly without stretching if 
+          the passed width and height aspect ratios vary slightly.
+        */
+        preserveAspectRatio="xMidYMid meet"
+      />
+  );
+}
+
+
+  
   const isRed = RED_SUITS.has(suit);
   const colorClass = isRed ? 'card-red' : 'card-black';
 
@@ -45,7 +78,7 @@ export default function Card({ rank = 'A', suit = '♠', faceUp = true, width = 
       aria-label={`${rank} of ${suit}`}
       role="img"
     >
-      <span className="card-corner card-top-left">
+      {/* <span className="card-corner card-top-left">
         <span className="card-rank">{rank}</span>
         <span className="card-suit">{suit}</span>
       </span>
@@ -53,7 +86,8 @@ export default function Card({ rank = 'A', suit = '♠', faceUp = true, width = 
       <span className="card-corner card-bot-right">
         <span className="card-rank">{rank}</span>
         <span className="card-suit">{suit}</span>
-      </span>
+      </span> */}
+      <CardFace rank={rank} suit={suit} width={width} height={height}/>
     </div>
   );
 }

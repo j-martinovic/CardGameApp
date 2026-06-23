@@ -72,7 +72,7 @@ export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, d
 
 
   // This function acts as the anchor tethering the lobby to the client
-  const handleGameStart = async ({gameName, matchID}) => {
+  const handleGameStart = async ({gameName, matchID, playerID="0"}) => {
     if (!confirmLogin()) {
       return
     }
@@ -82,6 +82,7 @@ export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, d
       matchID,
       {
           playerName: userInfo.userName,
+          playerID: playerID
       }
     )
     
@@ -89,6 +90,7 @@ export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, d
       matchID: matchID,
       credentials: playerCredentials,
       playerName: userInfo.userName,
+      playerID: playerID,
     });
 
     setActiveGame(gameName);
@@ -115,8 +117,9 @@ export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, d
       }
       const match = await lobbyClient.createMatch(createType, {
           numPlayers: numPlayers,
-          unlisted: privateRoom
+          unlisted: privateRoom,
       })
+      console.log("SUCCESSFULLY CREATED LOBBY... JOINING GAME")
       handleGameStart({
         gameName: createType,
         matchID: match.matchID,
@@ -145,13 +148,15 @@ export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, d
   if (screen === 'game') {
     // Inject the tokens directly into the chosen game client wrapper
     if (activeGame === 'Mighty') {
-      console.log("hi")
       return (
+        <>
+        {console.log("Connecting to Match:", connectionTokens.matchID, "as Player:", connectionTokens.playerID, " With the following credentials: ", connectionTokens.credentials)}
         <MightyClient 
           matchID={connectionTokens.matchID}
           playerID={connectionTokens.playerID}
           credentials={connectionTokens.credentials}
         />
+        </>
       );
     }
 
