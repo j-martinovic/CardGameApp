@@ -64,12 +64,12 @@
   padding: 8px 4px;
 }
 
-.hand .card { margin-left: -18px; }
-.hand .card:first-child { margin-left: 0; }
-.hand:hover .card { margin-left: -8px; }
+.hand > div { margin-left: -38px; }
+.hand .card:first-child { margin-left: 10; }
+/* .hand:hover .card { margin-left: -8px; } */
 
-.hand--disabled { opacity: 0.6; }
-
+/* .hand--disabled { opacity: 0.6; } */
+.hand--disabled > div { margin-left: -88px; }
 /* ── Deck / DrawPile ──────────────────────────────────────────────────────── */
 
 .deck {

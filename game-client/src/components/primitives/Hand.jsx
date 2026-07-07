@@ -20,6 +20,8 @@ export default function Hand({
   function handleCardClick({ cardId }) {
     if (!interactive) return;
     onCardSelect?.(selectedCardId === cardId ? null : cardId);
+    console.log("CARD CLICKED")
+    // console.log(onCardSelect(selectedCardId === cardId ? null : cardId))
   }
 
   function handleKeyDownCapture(e, cardId) {
@@ -32,10 +34,10 @@ export default function Hand({
   }
 
   return (
-    <div className={`hand ${disabled ? 'hand--disabled' : ''}`} aria-label={isOwner ? 'Your hand' : 'Opponent hand'}>
+    <div className={`hand ${!isOwner ? 'hand--disabled' : ''}`} aria-label={isOwner ? 'Your hand' : 'Opponent hand'}>
       {cards.map((card) => (
         <div key={card.id} onKeyDownCapture={(e) => handleKeyDownCapture(e, card.id)}>
-          {console.log(card)}
+          {/* {console.log(card)} */}
           <Card
             cardData={{ ...card, faceUp: isOwner }}
             sourceZoneId={zoneId}

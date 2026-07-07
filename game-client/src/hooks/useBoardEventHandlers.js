@@ -14,8 +14,8 @@ import { useCallback, useState } from 'react';
 // Key is `${sourceZoneType}→${targetZoneType}`; value is a key into the
 // abstract handler bag (the same names GenericBoard's baseHandlers exposes).
 const DEFAULT_MOVE_MAP = {
-  'hand→play': 'playCard',
-  'hand→discard': 'discardCard',
+  'hand→play': 'PlayCard',
+  'hand→discard': 'DiscardKitty',
   'deck→hand': 'drawCard',
   'pile→hand': 'discardCard',
   'hand→slot': 'playCard',
@@ -31,6 +31,8 @@ export function useBoardEventHandlers(props = {}, options = {}) {
   const dispatchMove = useCallback((sourceZoneType, targetZoneType, cardId, sourceZoneId, targetZoneId) => {
     const moveName = moveMap[`${sourceZoneType}→${targetZoneType}`];
     const fn = moveName && handlers[moveName];
+    console.log(fn)
+
     if (typeof fn !== 'function') {
       return;
     }
@@ -49,6 +51,10 @@ export function useBoardEventHandlers(props = {}, options = {}) {
   }, [dispatchMove]);
 
   const handleCardClick = useCallback(({ cardId, zoneId, zoneType }) => {
+    console.log(cardId)
+    console.log(zoneId)
+    console.log(zoneType)
+    
     if (!zoneType || zoneType === 'hand') {
       setSelectedCardId((prev) => (prev === cardId ? null : cardId));
       return;

@@ -85,7 +85,27 @@
 }
 
 /* ── Layout: table (future multi-player around a table) ─────────────────────── */
+.layout-table .board-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Force the board content container to take up the full window height */
+  justify-content: space-between; /* Pushes top to the ceiling, bottom to the floor */
+}
 
+/* Push the top row right against the top border padding */
+.layout-table .zone-row-top {
+  align-self: flex-start;
+  width: 100%;
+  margin-bottom: auto; /* Pushes the center row away from it */
+}
+
+/* Force the center row to dynamically expand vertically, centering its items in the remaining table space */
+.layout-table .zone-row-center {
+  flex: 1; 
+  display: flex;
+  align-items: center; /* Vertically centers left flank, right flank, and play area */
+  width: 100%;
+}
 .layout-table .board-content {
   display: grid;
   grid-template-areas:
@@ -96,6 +116,34 @@
   flex: 1;
   position: relative;
   z-index: 1;
+}
+
+
+/* ── Multi-player Table Layout Adjustments ─────────────────────────────────── */
+
+/* Spread opponents across the top row */
+.layout-table .zone-row-top {
+  justify-content: space-around;
+  padding: 20px 100px;
+}
+
+/* Force left and right flank opponents to the opposite screen edges */
+.layout-table .zone-row-center {
+  justify-content: space-between;
+  padding: 0 40px;
+  flex: 1;
+}
+
+/* Ensure your game play area stays anchored in the middle of the screen space */
+.layout-table .zone-row-center > :not(:first-child):not(:last-child) {
+  margin: 0 auto;
+}
+
+/* Frame your bottom row controls nicely */
+.layout-table .zone-row-bottom {
+  justify-content: center;
+  gap: 40px;
+  padding-bottom: 24px;
 }
 
 /* ── Board content wrapper ──────────────────────────────────────────────────── */

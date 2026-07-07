@@ -29,17 +29,17 @@ function abstractTypeOf(zoneId, zones) {
 }
 
 export default function ZoneLayout({ zones = [], G = {}, playerID, eventHandlers }) {
-  const { selectedCardId, handleCardDrop, handleCardClick, handleZoneClick, handleDeckClick } = eventHandlers;
+  const { handleCardDrop, handleCardClick, handleZoneClick, handleDeckClick, handleEndTurn, selectedCardId, setSelectedCardId } = eventHandlers;
 
   return (
     <>
       {zones.map((zone) => {
         const zoneData = G?.[zone.id];
         const abstractType = ZONE_TYPE_ABSTRACT[zone.type];
-        {console.log("---")}
-        {console.log(zone.id)}
-        {console.log("---")}
-        console.log(zone.type)
+        // {console.log("---")}
+        // {console.log(zone.faceUp)}
+        // {console.log("---")}
+        // console.log(zone.type)
         switch (zone.type) {
           case 'Hand': {
             const hand = (
