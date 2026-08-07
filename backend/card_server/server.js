@@ -1,7 +1,4 @@
 import { Server, Origins } from 'boardgame.io/dist/cjs/server.js';
-import { game1, game2 } from './games.js'
-import fs from 'fs'
-import WarGame from '../../game-client/src/games/war/War.js';
 import { Mighty } from './GameObjects/Mighty.js';
 
 const server = Server({
