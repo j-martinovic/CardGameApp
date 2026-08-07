@@ -1,5 +1,5 @@
 import React from 'react';
-import GenericBoard from '../../components/GenericBoard';
+import GenericBoard from '../../engine/components/GenericBoard';
 import { WarBoardConfig } from './WarBoardConfig';
 
 export default function WarBoard(props) {

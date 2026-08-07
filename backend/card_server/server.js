@@ -1,9 +1,10 @@
 import { Server, Origins } from 'boardgame.io/dist/cjs/server.js';
-import { Mighty } from './GameObjects/Mighty.js';
+import { Mighty } from '../../shared/games/Mighty.js';
+import { WarGame } from '../../shared/games/War.js';
 
 const server = Server({
   // Provide the definitions for your game(s).
-  games: [Mighty],
+  games: [Mighty, WarGame],
 
   // Provide the database storage class to use.
 //   db: new DbConnector(),

@@ -6,7 +6,7 @@
 // G shape: see setup() below.
 // Phases: 'playing' (normal round), 'war' (tie-breaker, same move, different label).
 
-import { INVALID_MOVE } from 'boardgame.io/dist/cjs/core.js';
+import { INVALID_MOVE } from './bgio-constants.js';
 
 // ── Deck helpers ──────────────────────────────────────────────────────────────
 

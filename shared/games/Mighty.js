@@ -1,5 +1,5 @@
 // import { addCard, removeCard, shuffle, createDeck } from './BoardResources_test.js'
-import { INVALID_MOVE } from 'boardgame.io/dist/cjs/core.js'
+import { INVALID_MOVE } from './bgio-constants.js'
 
 // function TransferCard({pile1, pile2, index=0}) {
 //     const res = removeCard(pile1)
