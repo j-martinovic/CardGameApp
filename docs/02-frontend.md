@@ -1,6 +1,9 @@
 # Frontend Walkthrough (`frontend/`)
 
-A Vite + React 19 SPA. Only runtime dependencies: `react`, `react-dom`, `boardgame.io`.
+> Updated 2026-08-06 after the cleanup: the board engine now lives at `src/engine/`, War is
+> a lobby game like Mighty, and every backend call targets the single server on port 8000.
+
+A Vite + React 19 SPA. Runtime dependencies: `react`, `react-dom`, `boardgame.io`.
 Entry: [index.html](../frontend/index.html) → [src/main.jsx](../frontend/src/main.jsx) →
 [src/App.jsx](../frontend/src/App.jsx). No router library — screens are `useState` state
 machines.
@@ -12,88 +15,57 @@ flowchart LR
     Home -->|Log In / Sign Up| Login
     Login -->|returnHome| Home
     Home -->|"Play (any game panel)"| Lobby[LobbyScreen: lobby view]
-    Lobby -->|create/join match| Game[LobbyScreen: game view<br/>MightyClient + MightyBoard]
-    Game -->|leave| Lobby
-    War[War screen] -.->|"UNREACHABLE — launchWar() sets 'lobby'"| Home
+    Lobby -->|"create/join Mighty match"| MightyG[MightyClient + MightyBoard]
+    Lobby -->|"create/join War match"| WarG[WarClient + WarBoard]
+    MightyG -->|leave| Lobby
+    WarG -->|leave| Lobby
 ```
 
-`App.jsx` holds `screen: 'home' | 'loggingIn' | 'war' | 'lobby'`. Note the `'war'` branch
-still exists and [War.jsx](../frontend/src/War.jsx) still compiles into the bundle, but
-nothing ever sets `screen = 'war'` anymore — both `launchLobby` and `launchWar` go to
-`'lobby'` ([App.jsx:57-58](../frontend/src/App.jsx#L57-L58)). The complete, working War game
-(vs. the house, via Flask) is one line away from being reachable again. **Decide: revive it
-or delete it.**
-
-## Live files, what they do, and what they call
+## Live files and what they call
 
 | File | Role | Network |
 |---|---|---|
 | [main.jsx](../frontend/src/main.jsx) | Entry, mounts `<App/>` | — |
-| [App.jsx](../frontend/src/App.jsx) | Screen router, holds `userInfo` | `POST :5000/logout` |
-| [Home.jsx](../frontend/src/Home.jsx) | Landing page; hardcoded game panels (War, Mighty, Hearts, …) — every panel's Play goes to the lobby | — |
-| [StaticVisuals.jsx](../frontend/src/StaticVisuals.jsx) | `HeaderBanner` (brand bar + auth buttons), shared by Home and Lobby | — |
-| [Login.jsx](../frontend/src/Login.jsx) | Login/signup form | `POST :5000/login` or `/signup` |
-| [War.jsx](../frontend/src/War.jsx) | Era 1 War game vs the house (608 lines, self-contained, works) | `POST :5000/war/new`, `/war/play`, `/war/quit` |
-| [assets/cards/CardFace.jsx](../frontend/src/assets/cards/CardFace.jsx) | Renders one card as `<img>` from `assets/cards/cards_good/*.svg` | — |
-| [LobbyComponents/LobbyScreen.jsx](../frontend/src/LobbyComponents/LobbyScreen.jsx) | Lobby orchestration: owns the boardgame.io `LobbyClient`, match/credential state, swaps lobby ⇄ game view | `:8080` lobby REST (`listGames`, `listMatches`, `createMatch`, `joinMatch`, `leaveMatch`) |
-| [LobbyComponents/Lobby.jsx](../frontend/src/LobbyComponents/Lobby.jsx) | Lobby dashboard UI: filter dropdown, create button, match grid with seats (polls every 50 s) | via callbacks from LobbyScreen |
-| [LobbyComponents/client.jsx](../frontend/src/LobbyComponents/client.jsx) | Builds `MightyClient = Client({game: Mighty, numPlayers: 5, board: MightyBoard, multiplayer: SocketIO})` | socket.io → `:8000` |
-| [LobbyComponents/loading_page.jsx](../frontend/src/LobbyComponents/loading_page.jsx) | Card-shuffle spinner while the client connects | — |
-| [board/MightyBoard.jsx](../frontend/src/board/MightyBoard.jsx) | 7-line adapter: `<GenericBoard config={MightyBoardConfig}/>` | — |
-| [board/MightyBoardConfig.js](../frontend/src/board/MightyBoardConfig.js) | Mighty presentation config: trump-aware hand sort, opponent seat rotation, zone layout | — |
-| [LobbyComponents/TestBoard.jsx](../frontend/src/LobbyComponents/TestBoard.jsx) | Debug board (JSON dump of `G` + one move button). Only referenced by **unused** imports — never rendered | — |
+| [App.jsx](../frontend/src/App.jsx) | Screen router (`home` / `loggingIn` / `lobby`), holds `userInfo` | `POST :8000/logout` |
+| [Home.jsx](../frontend/src/Home.jsx) | Landing page; hardcoded game panels — every Play goes to the lobby | — |
+| [StaticVisuals.jsx](../frontend/src/StaticVisuals.jsx) | `HeaderBanner` (brand bar + auth buttons) | — |
+| [Login.jsx](../frontend/src/Login.jsx) | Login/signup form | `POST :8000/login` or `/signup` |
+| [assets/cards/CardFace.jsx](../frontend/src/assets/cards/CardFace.jsx) | Renders a card as `<img>` from `assets/cards/cards_good/*.svg`. **Currently orphaned** — the engine's own `Card.jsx` renders cards as styled text; wiring these nicer SVG faces into the engine is a good future task. Kept deliberately, with the SVG assets | — |
+| [LobbyComponents/LobbyScreen.jsx](../frontend/src/LobbyComponents/LobbyScreen.jsx) | Lobby orchestration: `LobbyClient`, match/credential state, swaps lobby ⇄ game view (`Mighty` → `MightyClient`, `War` → `WarClient`) | lobby REST on `:8000` |
+| [LobbyComponents/Lobby.jsx](../frontend/src/LobbyComponents/Lobby.jsx) | Lobby dashboard UI: filter, create button (seat count from `GAME_NUM_PLAYERS`), match grid (polls every 50 s) | via callbacks |
+| [LobbyComponents/client.jsx](../frontend/src/LobbyComponents/client.jsx) | Builds `MightyClient` (5 seats) and `WarClient` (1 seat) from the shared game definitions + boards; exports `GAME_NUM_PLAYERS` | socket.io → `:8000` |
+| [LobbyComponents/loading_page.jsx](../frontend/src/LobbyComponents/loading_page.jsx) | Connecting spinner for the bgio client | — |
+| [board/MightyBoard.jsx](../frontend/src/board/MightyBoard.jsx) + [MightyBoardConfig.js](../frontend/src/board/MightyBoardConfig.js) | Mighty board = GenericBoard + config (trump-aware sort, seat rotation, zones) | — |
+| [board/war/WarBoard.jsx](../frontend/src/board/war/WarBoard.jsx) + [WarBoardConfig.js](../frontend/src/board/war/WarBoardConfig.js) + [WarAI.js](../frontend/src/board/war/WarAI.js) | War board = GenericBoard + config (deck click → `playCard`; WarAI holds display constants) | — |
+| [engine/](../frontend/src/engine/) | The GenericBoard rendering engine — see [04-generic-board.md](04-generic-board.md) | chat hooks POST to a dead `:5000` URL (to be stripped) |
 
-CSS: `index.css`, `Home.css`, `Login.css`, `War.css`, `LobbyScreen.css`,
-`LobbyComponents/Home.css` (verbatim duplicate of `Home.css`), `loading_page.css`,
-`App.css` (**empty file**).
+## The lobby → game handshake
 
-## The lobby → game handshake (worth understanding before refactoring)
+1. `LobbyScreen` creates/joins matches via the lobby REST API (`joinMatch` returns
+   `playerCredentials`).
+2. Tokens (`gameName`, `matchID`, `playerID`, `credentials`) are stored in
+   `connectionTokens` state.
+3. The screen flips to the game view and mounts the matching client
+   (`MightyClient` / `WarClient`); the boardgame.io `Client` HOC connects over socket.io
+   and streams `G`/`ctx` into the board.
 
-1. `LobbyScreen` creates matches / joins via the **lobby REST API on :8080**
-   (`lobbyClient.joinMatch` returns `playerCredentials`).
-2. Tokens (`matchID`, `playerID`, `credentials`) are stored in `connectionTokens` state.
-3. Screen flips to `'game'` and mounts `<MightyClient matchID playerID credentials/>` —
-   the boardgame.io `Client` HOC connects to **:8000 over socket.io** and streams `G`/`ctx`
-   into `MightyBoard`.
+## Known quirks still open
 
-## Known quirks & small bugs
+- **Everyone joins as seat 0**: `handleGameStart` defaults `playerID="0"` and the join
+  button never passes a seat, so a second player joining a Mighty match will collide with
+  the host's seat. Needs "first free seat" logic before real multiplayer testing.
+- Ports/URLs are hardcoded (now consistently `:8000`, but still in four places) — a small
+  config module is step 7 of the refactor plan.
+- `Lobby.jsx` polls the match list every 50 s (`50000` ms — probably meant 5 s).
+- `App.css` is an empty file; `Home.css` exists verbatim in two places (`src/` and
+  `src/LobbyComponents/`) and both copies load.
+- `frontend/README.md` is Vite boilerplate and `README_ASSETS.md` still contains stale
+  Era 1 claims ("boardgame.io — not installed") — rewrite in the docs truth pass.
 
-- **`leaveMatch` always fails silently**: `handleLeaveGame` reads
-  `connectionTokens.gameName`, but `setConnectionTokens` never stores `gameName`
-  ([LobbyScreen.jsx:103](../frontend/src/LobbyComponents/LobbyScreen.jsx#L103)). Seats are
-  never freed.
-- The game view only handles `activeGame === 'Mighty'`; any other game renders nothing
-  (falls through to "Screen not found" only when activeGame is unset).
-- `Lobby.jsx`'s join button sends `gameName: createType` (the *create* dropdown value), not
-  the game of the match being joined
-  ([Lobby.jsx:297](../frontend/src/LobbyComponents/Lobby.jsx#L297)) — joining a match while
-  the dropdown shows a different game would join the wrong game's namespace.
-- Ports/URLs are hardcoded in four places (`App.jsx`, `Login.jsx`, `War.jsx` → `:5000`;
-  `LobbyScreen.jsx` → `:8080`; `client.jsx` → `:8000`). No env vars, no Vite proxy.
-- **Dead imports that keep dead code alive**: `client.jsx` imports `GenericBoard`,
-  `WarBoard`, `War.js` (from `game-client/`), `game1` (from `card_server/games.js`) and
-  `TestBoard` — none are used in that file. `Lobby.jsx` imports `game1`, `TestBoard`,
-  `LobbyClient` unused. `App.jsx` imports `CardFace` unused. These lines are why the
-  reachability graph drags in the whole Era 2 War game — remove the lines and that code
-  becomes deletable (see [06-dead-code.md](06-dead-code.md)).
-- Cross-tree imports (the load-bearing ones): `client.jsx` imports **Mighty.js** from
-  `backend/card_server` (required — shared game definition) and `MightyBoard.jsx` imports
-  **GenericBoard** from `game-client` (required until the engine is moved — see
-  [07-refactor-plan.md](07-refactor-plan.md)).
+## Fixed/removed in the 2026-08 cleanup
 
-## Dead files inside `frontend/`
-
-| File | Evidence |
-|---|---|
-| `src/Mighty.jsx` (608 lines) | Imported by nothing. It is `War.jsx` with `War`→`Mighty` renamed (verified byte-identical after substitution) — still calls the `/war/*` API and imports `War.css`. An abandoned "start Mighty by copying War" attempt |
-| `src/Mighty.css` (772 lines) | Imported by nothing; byte-identical to `War.css` |
-| `src/board/MightyBoard.css` | Imported by nothing — `MightyBoard.jsx` doesn't import it (probably an oversight; decide during refactor whether its styles are wanted) |
-| `src/LobbyComponents/main.jsx` | Second copy of the entry file; `index.html` doesn't point at it, and its `./App.jsx` import wouldn't even resolve |
-| `src/LobbyComponents/index.css` | Only imported by the dead `main.jsx` above |
-| `src/components/AssetPreview.jsx` + `.css` | Dev-only asset gallery; only referenced in comments and `README_ASSETS.md` ("temporarily swap it into App"). Harmless dev tool — keep or delete deliberately |
-| `src/assets/animations/cardAnimations.css` | Only imported by AssetPreview |
-| `src/LobbyComponents/.LobbyScreen.jsx.swp` | Stale vim swap file |
-
-Also: `frontend/README.md` is untouched Vite boilerplate, and `frontend/README_ASSETS.md`
-contains a **stale architecture decision** ("boardgame.io — Not installed at this time") that
-directly contradicts the current code — worth rewriting after the refactor.
+For the record (details in [06-dead-code.md](06-dead-code.md)): the dead files
+(`Mighty.jsx`/`Mighty.css` War-clones, duplicate entry files, `TestBoard`, Era 1
+`War.jsx`/`War.css` and the unreachable `war` screen), the unused imports that kept them
+alive, the join-uses-dropdown-game bug, and the missing `gameName` in `connectionTokens`
+that broke `leaveMatch`.

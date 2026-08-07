@@ -1,5 +1,25 @@
 # Dead Code — What Can Be Removed, and In What Order
 
+> ## ✅ EXECUTED 2026-08-06 (branch `refactor-cleanup`)
+>
+> Everything below was carried out, phase by phase, with these deviations:
+> - **War was kept, not deleted**: `game-client/src/games/war/` became
+>   [shared/games/War.js](../shared/games/War.js) + `frontend/src/board/war/`, registered
+>   on the server and playable from the lobby. The *Era 1 Flask* War
+>   (`war_game.py`, `frontend/src/War.jsx`, `War.css`) was deleted — superseded by the
+>   boardgame.io version.
+> - **The whole Flask server was deleted**, not just `rooms.py`/`playground.py` — auth and
+>   the user DB moved into the Node game server (see [05-backend.md](05-backend.md));
+>   existing users were migrated with passwords hashed.
+> - `AssetPreview.jsx` (+ its two CSS files) and `CardFace.jsx` + the card SVGs were
+>   **kept** — the asset gallery is a harmless dev tool and the SVG card faces are meant
+>   to be wired into the engine's card renderer later.
+> - The Era 2 root docs were archived to [docs/history/](history/) rather than deleted.
+> - `requirements.txt` was deleted (no Python left) instead of re-encoded.
+>
+> This file is kept as the record of *what* was removed and *why*. Everything deleted
+> remains recoverable from git history.
+
 Method: every claim below is backed by an import-reachability walk from the two real entry
 points (`frontend/index.html → src/main.jsx` and `backend/card_server/server.js`), plus
 repo-wide greps for each candidate. Rough scale: **of ~120 source files in the repo, about
@@ -133,23 +153,18 @@ Remove the lines first (the app must still build), then delete the targets.
 
 ---
 
-## ⚠️ Do NOT delete (looks dead or misplaced, but is live)
+## ⚠️ Kept deliberately (looked dead or misplaced, but shouldn't go)
 
-| Path | Why it must stay (for now) |
+| Path (post-cleanup) | Why it stays |
 |---|---|
-| `game-client/src/components/` — GenericBoard, ZoneLayout, zoneLayoutDefaults, `zones/` (all 10), `primitives/` (all 7), Card.jsx, CardBack.jsx, Card.css | **The live board engine.** `frontend/src/board/MightyBoard.jsx` renders through it. Moves into `frontend/` in the refactor ([07-refactor-plan.md](07-refactor-plan.md)), after which the `game-client/` husk can be deleted |
-| `game-client/src/hooks/useBoardEventHandlers.js`, `useCardInteraction.js` | Imported by the engine |
-| `game-client/src/shared_handlers/` — `useCardInteractions`, `useBetting`, `useTurnRound`, `usePlayerActions`, `useSocial`, `useScoring`, `config.js` | Imported by GenericBoard (mostly no-ops for Mighty, but removing them is refactor work, not deletion work) |
-| `backend/card_server/GameObjects/Mighty.js` | The game. Imported by both server and frontend |
-| `frontend/src/LobbyComponents/loading_page.jsx` + `.css` | Used as the boardgame.io client's loading screen |
-| `frontend/src/assets/` (cards_good SVGs, ui/, table/) | `CardFace.jsx` builds card image URLs from `cards_good/` at runtime (`new URL(...)`), which static import analysis misses. The `ui/`, `table/`, avatar, chip SVGs are referenced only by the AssetPreview gallery and future plans — keep unless you also drop AssetPreview and don't want them |
-| `game-client/node_modules/` **on disk** | Untrack from git (Phase 0), but leave on disk until the engine is moved into `frontend/` — Vite module resolution for the cross-tree imports may look things up there |
+| `frontend/src/engine/` (formerly `game-client/src/{components,hooks,shared_handlers}`) | The live board engine both boards render through |
+| `shared/games/Mighty.js`, `shared/games/War.js` | The games — imported by both server and frontend |
+| `frontend/src/LobbyComponents/loading_page.jsx` + `.css` | The boardgame.io client's loading screen |
+| `frontend/src/assets/` + `CardFace.jsx` + `AssetPreview.jsx` | `CardFace` builds card image URLs at runtime (`new URL(...)`), invisible to static import analysis. Currently orphaned but intended for the engine's card renderer; AssetPreview is the dev gallery for these assets |
 
-## Tally
+## Final tally (as executed)
 
-- Phase 0 untracks ~15,000 artifact files.
-- Phases 1–2 delete ~55 source files (~7,000 lines) with no behavior change.
-- Phase 3 is up to ~2,000 more lines depending on the War / playground decisions.
-- After the Phase-4 engine move ([07-refactor-plan.md](07-refactor-plan.md)), the remaining
-  `game-client/` husk (~30 more files incl. package.json/vite config) goes too, and the
-  repo is down to: `frontend/`, `backend/`, `docs/`.
+- Phase 0 untracked ~15,000 artifact files; tracked file count went from ~15,200 to 177.
+- Phases 1–2 + the War/Flask decisions deleted ~65 source files (~9,000 lines).
+- `game-client/`, `game-server/`, `card-resources/`, and `backend/main_server/` no longer
+  exist; the repo is down to `frontend/`, `backend/card_server/`, `shared/`, `docs/`.
