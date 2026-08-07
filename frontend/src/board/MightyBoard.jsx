@@ -1,5 +1,5 @@
 import React from 'react';
-import GenericBoard from '../../../game-client/src/components/GenericBoard';
+import GenericBoard from '../engine/components/GenericBoard';
 import { MightyBoardConfig } from './MightyBoardConfig';
 
 export default function MightyBoard(props) {

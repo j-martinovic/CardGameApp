@@ -1,6 +1,7 @@
 import './Home.css'
 import React, { useEffect, useState } from 'react';
 import HeaderBanner from '../StaticVisuals.jsx';
+import { GAME_NUM_PLAYERS } from './client.jsx';
 
 
 export default function LobbyDashboard({ 
@@ -48,7 +49,8 @@ export default function LobbyDashboard({
         setActiveMatches(activeMatches_)
     };
 
-    const onCreateLobby = async (privateRoom=false, numPlayers=5) => {
+    const onCreateLobby = async (privateRoom=false) => {
+        const numPlayers = GAME_NUM_PLAYERS[createType] ?? 5
         console.log({createType, numPlayers})
         handleCreateLobby(createType, numPlayers, privateRoom)
         // onLoadAllGames(selectedFilter)
@@ -246,7 +248,7 @@ export default function LobbyDashboard({
                     {/* Decorative Token Suite Icon */}
                     <div className="game-panel-icon">
                     <span style={{ fontSize: '28px', color: isFull ? '#5a4525' : '#c9a84c', userSelect: 'none' }}>
-                        {match.gameName === 'war' ? '⚔️' : '🐟'}
+                        {match.gameName === 'War' ? '⚔️' : '🃏'}
                     </span>
                     </div>
 
@@ -291,7 +293,7 @@ export default function LobbyDashboard({
                     className={`game-play-btn ${isFull ? 'game-play-btn--disabled' : ''}`}
                     disabled={isFull}
                     onClick={() => onJoinMatch({
-                        gameName: createType,
+                        gameName: match.gameName,
                         matchID: match.matchID,
                         playerName: currentUserName,
                     })}

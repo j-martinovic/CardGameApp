@@ -2,7 +2,6 @@ import { useState } from 'react'
 import './App.css'
 import HomeScreen from './Home'
 import LoginScreen from './Login'
-import WarGame from './War'
 import LobbyScreen from './LobbyComponents/LobbyScreen.jsx'
 // NOTE: A visual asset gallery exists at ./components/AssetPreview.jsx
 // To view all card/chip/avatar/table SVGs and animation demos, temporarily
@@ -12,7 +11,7 @@ import LobbyScreen from './LobbyComponents/LobbyScreen.jsx'
 const API = 'http://127.0.0.1:5000'
 
 function App() {
-  // App-level routing: 'home' | 'loggingIn' | 'war'
+  // App-level routing: 'home' | 'loggingIn' | 'lobby'
   const [screen, setScreen] = useState('home')
   const [signUp, setSignUp]   = useState(false)
   const [userInfo, setUserInfo] = useState({})
@@ -54,15 +53,11 @@ function App() {
   // ── Navigation ────────────────────────────────────────────────────────────
 
   const launchLobby = () => setScreen('lobby')
-  const launchWar  = () => setScreen('lobby')
-  const quitWar    = () => setScreen('home')
 
   // ── Render ────────────────────────────────────────────────────────────────
 
   if (isLoggingIn) {
     return <LoginScreen returnHome={(user) => {returnHome(user, screen)}} signUp={signUp} />
-  } else if (screen === 'war') {
-    return <WarGame user={userInfo} onQuit={quitWar} />
   } else if (screen === "home") {
     return (
       <HomeScreen
