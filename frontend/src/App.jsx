@@ -3,7 +3,6 @@ import './App.css'
 import HomeScreen from './Home'
 import LoginScreen from './Login'
 import WarGame from './War'
-import CardFace from './assets/cards/CardFace'
 import LobbyScreen from './LobbyComponents/LobbyScreen.jsx'
 // NOTE: A visual asset gallery exists at ./components/AssetPreview.jsx
 // To view all card/chip/avatar/table SVGs and animation demos, temporarily
