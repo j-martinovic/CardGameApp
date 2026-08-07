@@ -1,6 +1,3 @@
-import { LobbyClient } from 'boardgame.io/client';
-import { game1 } from '../../../backend/card_server/games.js';
-import TestBoard from './TestBoard.jsx';
 import './Home.css'
 import React, { useEffect, useState } from 'react';
 import HeaderBanner from '../StaticVisuals.jsx';
