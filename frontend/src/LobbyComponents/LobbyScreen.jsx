@@ -1,5 +1,5 @@
 import  LobbyDashboard from './Lobby.jsx'
-import MightyClient from './Client.jsx'
+import MightyClient from './client.jsx'
 import { useState } from 'react';
 import { LobbyClient } from 'boardgame.io/client';
 import './LobbyScreen.css'
