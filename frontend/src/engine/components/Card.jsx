@@ -24,7 +24,7 @@ export default function Card({ rank = 'A', suit = 'S', faceUp = true, width = 80
 
 function CardFace({ rank = 'A', suit = 'S', width = 100, height = 140 }) {
  
-  const imgUrl = new URL(`../../../frontend/src/assets/cards/cards_good/${rank}${suit}.svg`, import.meta.url).href;
+  const imgUrl = new URL(`../../assets/cards/cards_good/${rank}${suit}.svg`, import.meta.url).href;
 
   return (
       <img

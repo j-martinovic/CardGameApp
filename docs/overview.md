@@ -53,16 +53,16 @@ Then: sign up / log in → **Play** → lobby → *Create Lobby*:
 - **War** (1 seat) — fully playable now: click your deck to flip cards against the house.
 - **Mighty** (5 seats) — deals and runs the bidding phase server-side; the board renders,
   but card-play wiring and several rule bugs are still open
-  (see [03-mighty-game-logic.md](03-mighty-game-logic.md) and
-  [04-generic-board.md](04-generic-board.md)). For solo testing use the boardgame.io debug
+  (see [03-mighty-game-logic.md](shared/mighty.md) and
+  [04-generic-board.md](frontend/board-engine.md)). For solo testing use the boardgame.io debug
   panel (`debug: true`) to act for the other seats.
 
 ## Directory map
 
 | Path | What it is |
 |---|---|
-| `frontend/` | The React app. Screens ([02-frontend.md](02-frontend.md)), the board engine (`src/engine/`, [04-generic-board.md](04-generic-board.md)), per-game board configs (`src/board/`) |
-| `backend/card_server/` | The one backend: `server.js` (games + lobby + auth) and `users.js` (accounts). [05-backend.md](05-backend.md) |
+| `frontend/` | The React app. Screens ([02-frontend.md](frontend/screens.md)), the board engine (`src/engine/`, [04-generic-board.md](frontend/board-engine.md)), per-game board configs (`src/board/`) |
+| `backend/card_server/` | The one backend: `server.js` (games + lobby + auth) and `users.js` (accounts). [05-backend.md](backend/architecture.md) |
 | `shared/games/` | Game definitions imported by both sides: `Mighty.js`, `War.js`, `bgio-constants.js`. Zero package dependencies by design |
 | `docs/` | These docs. `docs/history/` holds the Era 2 architecture docs, kept for reference only |
 
@@ -72,7 +72,7 @@ Then: sign up / log in → **Play** → lobby → *Create Lobby*:
 2. **Era 2 — the "generic card platform" experiment**: a second React app (`game-client`)
    with a drag-and-drop board engine and custom-game "playground", plus its own
    boardgame.io server (`game-server`). Documented by the (now archived) files in
-   [docs/history/](history/).
+   [docs/history/](project/history/).
 3. **Era 3 — Mighty**: the pivot to building Mighty properly on boardgame.io, reusing
    Era 2's board engine.
 
@@ -91,9 +91,9 @@ trick area, kitty).
 
 Still open (the friend's next milestones, in order):
 1. **Mighty card-play wiring** — clicking a card does nothing yet; a three-layer naming
-   mismatch with a documented config-only fix ([04-generic-board.md](04-generic-board.md)).
+   mismatch with a documented config-only fix ([04-generic-board.md](frontend/board-engine.md)).
 2. **Trick-completion crash** and the other verified rule bugs
-   ([03-mighty-game-logic.md](03-mighty-game-logic.md#known-bugs-verified-against-boardgameio-050-semantics)).
+   ([03-mighty-game-logic.md](shared/mighty.md#known-bugs-verified-against-boardgameio-050-semantics)).
 3. UI for bidding, kitty exchange, and partner selection.
 4. Engine simplification and config/security passes
-   ([07-refactor-plan.md](07-refactor-plan.md), steps 6–8).
+   ([07-refactor-plan.md](project/refactor-plan.md), steps 6–8).

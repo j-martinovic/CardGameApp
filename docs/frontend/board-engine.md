@@ -2,7 +2,7 @@
 
 Both game boards render through one component library — originally built in the Era 2
 `game-client`, now living at
-[frontend/src/engine/components/GenericBoard.jsx](../frontend/src/engine/components/GenericBoard.jsx).
+[frontend/src/engine/components/GenericBoard.jsx](../../frontend/src/engine/components/GenericBoard.jsx).
 
 `frontend/src/board/MightyBoard.jsx` is just:
 
@@ -13,7 +13,7 @@ export default function MightyBoard(props) {
 }
 ```
 
-([board/war/WarBoard.jsx](../frontend/src/board/war/WarBoard.jsx) is the same 7-line shape
+([board/war/WarBoard.jsx](../../frontend/src/board/war/WarBoard.jsx) is the same 7-line shape
 with `WarBoardConfig`.)
 
 ## What's in the engine
@@ -37,7 +37,7 @@ Everything under `frontend/src/engine/`:
 
 Props come from the boardgame.io `Client` HOC: `G`, `ctx`, `moves`, `playerID`, `matchID`,
 plus a per-game `config` object. The config contract (as used by
-[MightyBoardConfig.js](../frontend/src/board/MightyBoardConfig.js)):
+[MightyBoardConfig.js](../../frontend/src/board/MightyBoardConfig.js)):
 
 | Config key | Meaning |
 |---|---|
@@ -49,7 +49,7 @@ plus a per-game `config` object. The config contract (as used by
 | `useDefaultInteractiveZones` | `true` = auto-build a generic seat layout instead of using `interactiveZones` |
 | `actions` | Buttons for the ActionZone |
 
-Two render paths ([GenericBoard.jsx:288-352](../frontend/src/engine/components/GenericBoard.jsx#L288-L352)):
+Two render paths ([GenericBoard.jsx:288-352](../../frontend/src/engine/components/GenericBoard.jsx#L288-L352)):
 
 1. **Interactive path** (used by both Mighty and War): `ZoneLayout` renders rows of
    primitives (Hand/Pile/PlayZone/Deck) and wires clicks + HTML5 drag/drop through
@@ -77,14 +77,14 @@ primitive (Hand/PlayZone)
 
 **Three different naming conventions collide**:
 
-1. [useBoardEventHandlers.js:16-22](../frontend/src/engine/hooks/useBoardEventHandlers.js#L16-L22)
+1. [useBoardEventHandlers.js:16-22](../../frontend/src/engine/hooks/useBoardEventHandlers.js#L16-L22)
    `DEFAULT_MOVE_MAP` maps `'hand→play'` to `'PlayCard'` (capitalized — recently edited).
-2. GenericBoard's handler bag ([GenericBoard.jsx:123-164](../frontend/src/engine/components/GenericBoard.jsx#L123-L164))
+2. GenericBoard's handler bag ([GenericBoard.jsx:123-164](../../frontend/src/engine/components/GenericBoard.jsx#L123-L164))
    uses camelCase keys (`playCard`), so `handlers['PlayCard']` is `undefined` and
    `dispatchMove` returns without doing anything
-   ([useBoardEventHandlers.js:36-38](../frontend/src/engine/hooks/useBoardEventHandlers.js#L36-L38)).
+   ([useBoardEventHandlers.js:36-38](../../frontend/src/engine/hooks/useBoardEventHandlers.js#L36-L38)).
 3. Even the camelCase handlers only call **snake_case** boardgame.io moves optionally —
-   `moves.play_card?.(...)` ([useCardInteractions.js:20](../frontend/src/engine/shared_handlers/useCardInteractions.js#L20)) —
+   `moves.play_card?.(...)` ([useCardInteractions.js:20](../../frontend/src/engine/shared_handlers/useCardInteractions.js#L20)) —
    and Mighty's actual moves are `PlayCard`, `MakeBid`, etc. So the entire
    `shared_handlers` layer is a stack of no-ops for Mighty.
 
@@ -109,9 +109,9 @@ moveOverrides: {
 ```
 
 `moveOverrides` entries replace bag entries by key and receive `(moves, G, ...args)`
-([GenericBoard.jsx:167-175](../frontend/src/engine/components/GenericBoard.jsx#L167-L175)), so
+([GenericBoard.jsx:167-175](../../frontend/src/engine/components/GenericBoard.jsx#L167-L175)), so
 this is the supported hook for exactly this purpose. The War config
-([board/war/WarBoardConfig.js](../frontend/src/board/war/WarBoardConfig.js)) already does
+([board/war/WarBoardConfig.js](../../frontend/src/board/war/WarBoardConfig.js)) already does
 exactly this — which is why War is playable and Mighty isn't yet.
 
 Recommendation for the refactor: delete the abstract-handler indirection entirely and have
@@ -125,7 +125,7 @@ layer instead of three.
   never receives/forwards it), then falls back to `handlers.endTurn` →
   `moves.end_turn?.()` — which Mighty doesn't define.
 - **Chat goes nowhere**: `useSocial` POSTs to `:5000/shared/chat/*`
-  ([engine/shared_handlers/config.js](../frontend/src/engine/shared_handlers/config.js)) —
+  ([engine/shared_handlers/config.js](../../frontend/src/engine/shared_handlers/config.js)) —
   an endpoint that never existed and whose server (Flask) is now gone entirely, so chat
   actions fail with a connection error in the console. Strip `useSocial` in the
   engine-simplification step; chat done right would ride boardgame.io, not REST.
