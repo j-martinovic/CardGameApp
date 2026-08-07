@@ -1,5 +1,5 @@
 import  LobbyDashboard from './Lobby.jsx'
-import MightyClient from './client.jsx'
+import MightyClient, { WarClient } from './client.jsx'
 import { useState } from 'react';
 import { LobbyClient } from 'boardgame.io/client';
 import './LobbyScreen.css'
@@ -87,6 +87,7 @@ export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, d
     )
     
     setConnectionTokens({
+      gameName: gameName,
       matchID: matchID,
       credentials: playerCredentials,
       playerName: userInfo.userName,
@@ -104,7 +105,7 @@ export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, d
       playerID: connectionTokens.playerID,
       credentials: connectionTokens.credentials,
     });
-    setConnectionTokens({ matchID: null, playerID: null, credentials: null, playerName: null });
+    setConnectionTokens({ gameName: null, matchID: null, playerID: null, credentials: null, playerName: null });
     setActiveGame(null);
     setScreen('lobby');
   }
@@ -151,7 +152,7 @@ export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, d
       return (
         <>
         {console.log("Connecting to Match:", connectionTokens.matchID, "as Player:", connectionTokens.playerID, " With the following credentials: ", connectionTokens.credentials)}
-        <MightyClient 
+        <MightyClient
           matchID={connectionTokens.matchID}
           playerID={connectionTokens.playerID}
           credentials={connectionTokens.credentials}
@@ -160,6 +161,15 @@ export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, d
       );
     }
 
+    if (activeGame === 'War') {
+      return (
+        <WarClient
+          matchID={connectionTokens.matchID}
+          playerID={connectionTokens.playerID}
+          credentials={connectionTokens.credentials}
+        />
+      );
+    }
 
   }
 
