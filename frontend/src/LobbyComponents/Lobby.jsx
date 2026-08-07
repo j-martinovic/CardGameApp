@@ -9,7 +9,7 @@ export default function LobbyDashboard({
         openLogin,
         signOut,
         returnHome,
-        server = "http://localhost:8080",
+        server = "http://localhost:8000",
         currentUserName = "Player", //CONVERT TO PLAYER METADATA FROM HOME DATABASE
         onJoinMatch = (matchId) => console.log(`Placeholder: Joining match ${matchId}`),
         handleFindAllGameTypes = () => {},

@@ -8,7 +8,7 @@ import LobbyScreen from './LobbyComponents/LobbyScreen.jsx'
 // replace the JSX return below with: <AssetPreview />
 // See frontend/README_ASSETS.md for full documentation.
 
-const API = 'http://127.0.0.1:5000'
+const API = 'http://127.0.0.1:8000'
 
 function App() {
   // App-level routing: 'home' | 'loggingIn' | 'lobby'

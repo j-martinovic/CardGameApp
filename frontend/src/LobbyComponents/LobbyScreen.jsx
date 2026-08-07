@@ -7,7 +7,7 @@ import './LobbyScreen.css'
 export default function LobbyScreen({userInfo, openLogin, signOut, returnHome, defaultGame="Mighty"}) {
 
   // const userInfo = {userName: "Jeff"}
-  const server = "http://localhost:8080"
+  const server = "http://localhost:8000"
   const [screen, setScreen] = useState('lobby'); // 'lobby' | 'game'
   const [activeGame, setActiveGame] = useState(null); // 'war' | 'go_fish'
   const lobbyClient = new LobbyClient({ server: server })
