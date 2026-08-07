@@ -4,12 +4,12 @@
 >
 > Everything below was carried out, phase by phase, with these deviations:
 > - **War was kept, not deleted**: `game-client/src/games/war/` became
->   [shared/games/War.js](../shared/games/War.js) + `frontend/src/board/war/`, registered
+>   [shared/games/War.js](../../shared/games/War.js) + `frontend/src/board/war/`, registered
 >   on the server and playable from the lobby. The *Era 1 Flask* War
 >   (`war_game.py`, `frontend/src/War.jsx`, `War.css`) was deleted — superseded by the
 >   boardgame.io version.
 > - **The whole Flask server was deleted**, not just `rooms.py`/`playground.py` — auth and
->   the user DB moved into the Node game server (see [05-backend.md](05-backend.md));
+>   the user DB moved into the Node game server (see [05-backend.md](../backend/architecture.md));
 >   existing users were migrated with passwords hashed.
 > - `AssetPreview.jsx` (+ its two CSS files) and `CardFace.jsx` + the card SVGs were
 >   **kept** — the asset gallery is a harmless dev tool and the SVG card faces are meant
@@ -27,7 +27,7 @@ repo-wide greps for each candidate. Rough scale: **of ~120 source files in the r
 artifacts.
 
 Work in the phases below — each phase leaves the app runnable. Verify between phases:
-start the three servers ([01-overview.md](01-overview.md#how-to-run-the-live-system-3-terminals)),
+start the three servers ([01-overview.md](../overview.md#how-to-run-2-terminals)),
 log in, create a Mighty match, see the board render.
 
 ---
@@ -77,7 +77,7 @@ Also:
 |---|---|
 | `game-server/` | Era 2 boardgame.io server, superseded by `backend/card_server`. Nothing imports it; its only reference is `start-game-servers.sh` (also deletable, see below) |
 | `card-resources/` | Pre-boardgame.io prototype (`BoardResources_test.jsx`, `app_test.jsx` — which imports a CSS file that doesn't even exist). The card SVGs were already copied to `frontend/src/assets/cards/cards_good/` |
-| `backend/main_server/shared_handlers/` | 13-file Python package, never imported, never registered as a blueprint (its own header admits the registration line was never added). See [05-backend.md](05-backend.md#the-shared_handlers-story) |
+| `backend/main_server/shared_handlers/` | 13-file Python package, never imported, never registered as a blueprint (its own header admits the registration line was never added). See [05-backend.md](../backend/architecture.md#what-happened-to-the-flask-server) |
 
 ### `game-client/` — the dead majority (keep the engine! see "Do NOT delete" below)
 
@@ -127,10 +127,10 @@ Remove the lines first (the app must still build), then delete the targets.
 
 | File | Remove |
 |---|---|
-| [frontend/src/LobbyComponents/client.jsx](../frontend/src/LobbyComponents/client.jsx) | imports of `game1` (games.js), `TestBoard`, `GenericBoard`, `WarBoard`, `WarGame` (keep: `Client`, `SocketIO`, `Mighty`, `MightyBoard`, `LoadingPage`) |
-| [frontend/src/LobbyComponents/Lobby.jsx](../frontend/src/LobbyComponents/Lobby.jsx) | imports of `LobbyClient`, `game1`, `TestBoard` |
-| [frontend/src/App.jsx](../frontend/src/App.jsx) | import of `CardFace` |
-| [backend/card_server/server.js](../backend/card_server/server.js) | imports of `game1, game2` (games.js), `fs`, `WarGame` |
+| [frontend/src/LobbyComponents/client.jsx](../../frontend/src/LobbyComponents/client.jsx) | imports of `game1` (games.js), `TestBoard`, `GenericBoard`, `WarBoard`, `WarGame` (keep: `Client`, `SocketIO`, `Mighty`, `MightyBoard`, `LoadingPage`) |
+| [frontend/src/LobbyComponents/Lobby.jsx](../../frontend/src/LobbyComponents/Lobby.jsx) | imports of `LobbyClient`, `game1`, `TestBoard` |
+| [frontend/src/App.jsx](../../frontend/src/App.jsx) | import of `CardFace` |
+| [backend/card_server/server.js](../../backend/card_server/server.js) | imports of `game1, game2` (games.js), `fs`, `WarGame` |
 
 **Then delete:**
 

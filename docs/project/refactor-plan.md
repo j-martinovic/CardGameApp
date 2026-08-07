@@ -50,7 +50,7 @@ CardGameApp/
 
 ## ✅ Step 1 — Hygiene + dead code (done)
 
-See [06-dead-code.md](06-dead-code.md) for the full executed record. Repo went from
+See [06-dead-code.md](dead-code.md) for the full executed record. Repo went from
 ~15,200 tracked files to 177.
 
 ## ✅ Step 2 — Engine moved into the frontend (done)
@@ -69,13 +69,13 @@ Also done here because two games made them mandatory: lobby joins now use the ma
 ## Step 4 — Make a Mighty card playable (NEXT — the current wall)
 
 Config-only change in `MightyBoardConfig.js`; exact snippet in
-[04-generic-board.md](04-generic-board.md#the-move-dispatch-pipeline--and-why-playing-a-card-does-nothing).
+[04-generic-board.md](../frontend/board-engine.md#the-move-dispatch-pipeline--and-why-playing-a-card-does-nothing).
 War's config already does it this way — use it as the model.
 
 ## Step 5 — Fix the Mighty rules bugs, crashers first
 
 Ordered, line-referenced list in
-[03-mighty-game-logic.md](03-mighty-game-logic.md#known-bugs-verified-against-boardgameio-050-semantics):
+[03-mighty-game-logic.md](../shared/mighty.md#known-bugs-verified-against-boardgameio-050-semantics):
 `playing.onEnd` rewrite first, then the seat-mapping, undeclared variables, follow-suit,
 killed-Joker, and scoring bugs; then split the overloaded `previousPartner`. Strongly
 consider extracting `TakeTrick`/`UpdateScore`/bid validation into pure functions

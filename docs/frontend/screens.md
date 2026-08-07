@@ -4,8 +4,8 @@
 > a lobby game like Mighty, and every backend call targets the single server on port 8000.
 
 A Vite + React 19 SPA. Runtime dependencies: `react`, `react-dom`, `boardgame.io`.
-Entry: [index.html](../frontend/index.html) → [src/main.jsx](../frontend/src/main.jsx) →
-[src/App.jsx](../frontend/src/App.jsx). No router library — screens are `useState` state
+Entry: [index.html](../../frontend/index.html) → [src/main.jsx](../../frontend/src/main.jsx) →
+[src/App.jsx](../../frontend/src/App.jsx). No router library — screens are `useState` state
 machines.
 
 ## Screen flow
@@ -25,19 +25,19 @@ flowchart LR
 
 | File | Role | Network |
 |---|---|---|
-| [main.jsx](../frontend/src/main.jsx) | Entry, mounts `<App/>` | — |
-| [App.jsx](../frontend/src/App.jsx) | Screen router (`home` / `loggingIn` / `lobby`), holds `userInfo` | `POST :8000/logout` |
-| [Home.jsx](../frontend/src/Home.jsx) | Landing page; hardcoded game panels — every Play goes to the lobby | — |
-| [StaticVisuals.jsx](../frontend/src/StaticVisuals.jsx) | `HeaderBanner` (brand bar + auth buttons) | — |
-| [Login.jsx](../frontend/src/Login.jsx) | Login/signup form | `POST :8000/login` or `/signup` |
-| [assets/cards/CardFace.jsx](../frontend/src/assets/cards/CardFace.jsx) | Renders a card as `<img>` from `assets/cards/cards_good/*.svg`. **Currently orphaned** — the engine's own `Card.jsx` renders cards as styled text; wiring these nicer SVG faces into the engine is a good future task. Kept deliberately, with the SVG assets | — |
-| [LobbyComponents/LobbyScreen.jsx](../frontend/src/LobbyComponents/LobbyScreen.jsx) | Lobby orchestration: `LobbyClient`, match/credential state, swaps lobby ⇄ game view (`Mighty` → `MightyClient`, `War` → `WarClient`) | lobby REST on `:8000` |
-| [LobbyComponents/Lobby.jsx](../frontend/src/LobbyComponents/Lobby.jsx) | Lobby dashboard UI: filter, create button (seat count from `GAME_NUM_PLAYERS`), match grid (polls every 50 s) | via callbacks |
-| [LobbyComponents/client.jsx](../frontend/src/LobbyComponents/client.jsx) | Builds `MightyClient` (5 seats) and `WarClient` (1 seat) from the shared game definitions + boards; exports `GAME_NUM_PLAYERS` | socket.io → `:8000` |
-| [LobbyComponents/loading_page.jsx](../frontend/src/LobbyComponents/loading_page.jsx) | Connecting spinner for the bgio client | — |
-| [board/MightyBoard.jsx](../frontend/src/board/MightyBoard.jsx) + [MightyBoardConfig.js](../frontend/src/board/MightyBoardConfig.js) | Mighty board = GenericBoard + config (trump-aware sort, seat rotation, zones) | — |
-| [board/war/WarBoard.jsx](../frontend/src/board/war/WarBoard.jsx) + [WarBoardConfig.js](../frontend/src/board/war/WarBoardConfig.js) + [WarAI.js](../frontend/src/board/war/WarAI.js) | War board = GenericBoard + config (deck click → `playCard`; WarAI holds display constants) | — |
-| [engine/](../frontend/src/engine/) | The GenericBoard rendering engine — see [04-generic-board.md](04-generic-board.md) | chat hooks POST to a dead `:5000` URL (to be stripped) |
+| [main.jsx](../../frontend/src/main.jsx) | Entry, mounts `<App/>` | — |
+| [App.jsx](../../frontend/src/App.jsx) | Screen router (`home` / `loggingIn` / `lobby`), holds `userInfo` | `POST :8000/logout` |
+| [Home.jsx](../../frontend/src/Home.jsx) | Landing page; hardcoded game panels — every Play goes to the lobby | — |
+| [StaticVisuals.jsx](../../frontend/src/StaticVisuals.jsx) | `HeaderBanner` (brand bar + auth buttons) | — |
+| [Login.jsx](../../frontend/src/Login.jsx) | Login/signup form | `POST :8000/login` or `/signup` |
+| [assets/cards/CardFace.jsx](../../frontend/src/assets/cards/CardFace.jsx) | Renders a card as `<img>` from `assets/cards/cards_good/*.svg`. **Currently orphaned** — the engine's own [Card.jsx](../../frontend/src/engine/components/Card.jsx) does the same job against the same SVGs (see [engine-reference.md](engine-reference.md)); consolidating the two renderers is a good future task. Kept deliberately, with the SVG assets | — |
+| [LobbyComponents/LobbyScreen.jsx](../../frontend/src/LobbyComponents/LobbyScreen.jsx) | Lobby orchestration: `LobbyClient`, match/credential state, swaps lobby ⇄ game view (`Mighty` → `MightyClient`, `War` → `WarClient`) | lobby REST on `:8000` |
+| [LobbyComponents/Lobby.jsx](../../frontend/src/LobbyComponents/Lobby.jsx) | Lobby dashboard UI: filter, create button (seat count from `GAME_NUM_PLAYERS`), match grid (polls every 50 s) | via callbacks |
+| [LobbyComponents/client.jsx](../../frontend/src/LobbyComponents/client.jsx) | Builds `MightyClient` (5 seats) and `WarClient` (1 seat) from the shared game definitions + boards; exports `GAME_NUM_PLAYERS` | socket.io → `:8000` |
+| [LobbyComponents/loading_page.jsx](../../frontend/src/LobbyComponents/loading_page.jsx) | Connecting spinner for the bgio client | — |
+| [board/MightyBoard.jsx](../../frontend/src/board/MightyBoard.jsx) + [MightyBoardConfig.js](../../frontend/src/board/MightyBoardConfig.js) | Mighty board = GenericBoard + config (trump-aware sort, seat rotation, zones) | — |
+| [board/war/WarBoard.jsx](../../frontend/src/board/war/WarBoard.jsx) + [WarBoardConfig.js](../../frontend/src/board/war/WarBoardConfig.js) + [WarAI.js](../../frontend/src/board/war/WarAI.js) | War board = GenericBoard + config (deck click → `playCard`; WarAI holds display constants) | — |
+| [engine/](../../frontend/src/engine/) | The GenericBoard rendering engine — see [04-generic-board.md](board-engine.md) | chat hooks POST to a dead `:5000` URL (to be stripped) |
 
 ## The lobby → game handshake
 
@@ -64,7 +64,7 @@ flowchart LR
 
 ## Fixed/removed in the 2026-08 cleanup
 
-For the record (details in [06-dead-code.md](06-dead-code.md)): the dead files
+For the record (details in [06-dead-code.md](../project/dead-code.md)): the dead files
 (`Mighty.jsx`/`Mighty.css` War-clones, duplicate entry files, `TestBoard`, Era 1
 `War.jsx`/`War.css` and the unreachable `war` screen), the unused imports that kept them
 alive, the join-uses-dropdown-game bug, and the missing `gameName` in `connectionTokens`
