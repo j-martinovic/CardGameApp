@@ -40,7 +40,7 @@ const LoginScreen = ({ returnHome, signUp }) => {
         setIsLoading(true)
         try {
             const resp = await fetch(
-                `http://127.0.0.1:5000/${signUp ? 'signup' : 'login'}`,
+                `http://127.0.0.1:8000/${signUp ? 'signup' : 'login'}`,
                 {
                     method:  'POST',
                     headers: { 'Content-Type': 'application/json' },
