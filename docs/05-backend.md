@@ -1,96 +1,67 @@
-# Backend Walkthrough — `card_server` (boardgame.io) and `main_server` (Flask)
+# Backend Walkthrough — one Node server (`backend/card_server/`)
 
-## `backend/card_server/` — the game server (LIVE)
+> Rewritten 2026-08-06: the separate Flask server (`backend/main_server`) was merged into
+> the game server. Auth, lobby, and games now share one process and one port. The old
+> Flask code lives on in git history (last present at the `refactor-cleanup~1` commits).
 
-[server.js](../backend/card_server/server.js) (33 lines) is the whole server:
+## `server.js` — everything on port 8000
 
-```js
-const server = Server({ games: [Mighty], origins: [...] });
-server.run({ port: 8000, lobbyConfig: { apiPort: 8080 } });
-```
+[server.js](../backend/card_server/server.js) builds the boardgame.io `Server` with
+`games: [Mighty, WarGame]` (imported from [shared/games/](../shared/games/)) and runs it
+**without** `lobbyConfig.apiPort` — which makes boardgame.io mount its lobby REST API on
+the same Koa app as the game socket. The auth routes are registered on the same app via
+`server.router`, so one process serves:
 
-- Game socket on **:8000**, lobby REST API on **:8080** (this split is standard
-  boardgame.io; the frontend's `LobbyClient` uses 8080, the game client uses 8000).
-- Registers **only Mighty** ([GameObjects/Mighty.js](../backend/card_server/GameObjects/Mighty.js)
-  — fully documented in [03-mighty-game-logic.md](03-mighty-game-logic.md)).
-- No persistent storage configured → matches live in memory and vanish on restart.
-
-Dead weight in this directory:
-- [games.js](../backend/card_server/games.js) — two stub game definitions (`game1`
-  "Mighty", `game2` "Golf") with empty moves. Imported by `server.js`, `client.jsx`, and
-  `Lobby.jsx` but **never used** by any of them.
-- `server.js:4` imports `WarGame` from `game-client` — never registered.
-- [GameObjects/BoardResources_test.jsx](../backend/card_server/GameObjects/BoardResources_test.jsx)
-  — byte-identical copy of `card-resources/BoardResources_test.jsx` (a pre-boardgame.io
-  card-rendering prototype). Only referenced by a *commented-out* import in `Mighty.js`
-  (which points at a `.js` path that wouldn't resolve anyway).
-- [package.json](../backend/card_server/package.json) is a copied Vite React scaffold
-  (name "mighty", `dev: vite` scripts, react deps) — the server is actually run with plain
-  `node server.js` and only needs `boardgame.io`. Its `node_modules/` (~7,000 files) is
-  **committed to git**.
-
-## `backend/main_server/` — the Flask server (LIVE for auth; half dead)
-
-Run: `python main.py` → Flask dev server on **:5000**, `debug=True`, SQLite at
-`instance/userdata.db`, CORS open to everyone.
-
-| File | Verdict | What it does |
+| Concern | Routes / transport | Who calls it |
 |---|---|---|
-| [config.py](../backend/main_server/config.py) | LIVE | Flask app + SQLAlchemy + blanket `CORS(app)` |
-| [models.py](../backend/main_server/models.py) | LIVE | One table: `User(id, user_name, password, email, logged_in)` — plaintext password, and `to_json()` **returns the password** in every response |
-| [main.py](../backend/main_server/main.py) | LIVE | Registers the three blueprints + auth routes |
-| [war_game.py](../backend/main_server/war_game.py) | PARKED | Complete, working server-side War vs bot (in-memory `_active_games`). Its only caller is `frontend/src/War.jsx`, whose screen is currently unreachable (one-line fix in `App.jsx` revives it) |
-| [rooms.py](../backend/main_server/rooms.py) | DEAD-IN-PRACTICE | Room/lobby system with 4-char codes bridging Flask users to bgio matches. Only caller: the dead Era 2 `game-client` lobby. The live lobby uses boardgame.io's own :8080 API instead |
-| [playground.py](../backend/main_server/playground.py) | DEAD-IN-PRACTICE | Stores custom-game rule JSON (table `custom_games`). Only caller: dead Era 2 playground |
-| [shared_handlers/](../backend/main_server/shared_handlers/) | **DEAD** | 13-file package, never imported by anything (see below) |
+| Game engine | socket.io on :8000 | `client.jsx`'s `SocketIO({server: 'localhost:8000'})` |
+| Lobby REST | `GET /games`, `GET /games/:name`, `POST /games/:name/create`, `.../join`, `.../leave`, … | `LobbyScreen.jsx`'s `LobbyClient({server: 'http://localhost:8000'})` |
+| Auth | `POST /signup`, `POST /login`, `POST /logout` | `Login.jsx`, `App.jsx` |
 
-### Route inventory (who actually calls what)
+CORS for all three comes from the one `origins` config (`Origins.LOCALHOST_IN_DEVELOPMENT`
+in dev). Request bodies for the auth routes are parsed by a small local `readJsonBody`
+helper — no extra dependencies. `package.json` is now honest: the only dependency is
+`boardgame.io`.
 
-| Route | Caller |
+## `users.js` — accounts
+
+[users.js](../backend/card_server/users.js) stores accounts in SQLite via **`node:sqlite`**
+(built into Node ≥ 22.5; no native modules — it prints an "experimental" warning on boot,
+which is fine). The DB file is `backend/card_server/data/users.db` (gitignored).
+
+Schema: `users(id, user_name UNIQUE, email UNIQUE, password_hash, logged_in)`.
+
+Security posture (all fixed relative to the Flask era):
+- Passwords are **scrypt-hashed** with per-user salts (`hashPassword`/`verifyPassword`
+  with `timingSafeEqual`) — the old server stored them in plaintext.
+- API responses **no longer include the password** (the old `to_json` did).
+- The DB file is **not committed to git** (the old `userdata.db` was).
+
+The 9 existing accounts were migrated with their passwords hashed; everyone's old
+password still works.
+
+Still deliberately simple (fine for localhost, on the list before going online):
+- No sessions or tokens — the client just remembers the user object; `/logout` trusts the
+  id it's handed. Real session handling is future work
+  ([07-refactor-plan.md](07-refactor-plan.md) step 7).
+- `logged_in` is a plain flag, not enforcement.
+
+## Game/lobby state
+
+boardgame.io keeps match state **in memory** (no `db` configured) — restarting the server
+loses running matches and the lobby list. Fine for development; boardgame.io supports
+pluggable storage when persistence matters.
+
+## What happened to the Flask server
+
+`backend/main_server/` was deleted in the merge. Where each piece went:
+
+| Flask piece | Fate |
 |---|---|
-| `POST /login`, `POST /signup` | [Login.jsx](../frontend/src/Login.jsx) ✅ |
-| `POST /logout` | [App.jsx](../frontend/src/App.jsx) ✅ |
-| `PATCH /update_user/<id>`, `DELETE /delete_user/<id>` | nobody |
-| `POST /war/new`, `/war/play`, `/war/quit` | `War.jsx` (screen unreachable) |
-| `GET /war/state` | nobody |
-| `/rooms/*` (10 routes) | only dead `game-client` (`RoomsAPI.js`) |
-| `/playground/*` (6 routes) | only dead `game-client` (`PlaygroundAPI.js`); 3 of the 6 have no caller even there |
-| `/shared/*` (18 routes in `shared_handlers/api_routes.py`) | **blueprint never registered — these routes don't exist at runtime**, yet the live board's chat hooks POST to them → guaranteed 404s |
-
-### The `shared_handlers/` story
-
-A 13-module Python package (~2,000 lines) of card-game handler functions (betting, bridge,
-euchre, poker, scoring, social, …), mirrored by a JS twin in
-`game-client/src/shared_handlers/`. It was scaffolded but **never wired up**:
-
-- `api_routes.py`'s own header says "add ONE line to main.py to register this" — that line
-  was never added. No Python file outside the package imports it.
-- Most module docstrings admit the functions are **stubs with correct signatures**.
-- The committed `__pycache__` even proves it: there's bytecode for the 11 modules the
-  package `__init__` imports, but none for `api_routes.py` — the only file with routes.
-- Consequence for the live app: `GenericBoard`'s chat/moderation calls
-  (`useSocial` → `POST :5000/shared/chat/message` etc.) 404. Nothing else notices the
-  package exists.
-
-Verdict: delete the whole package (and either strip `useSocial` from the board engine or
-implement chat for real later — through boardgame.io, not Flask, would be the natural home).
-
-### Security notes (worth fixing during the refactor)
-
-- Passwords stored **in plaintext** and **returned by the API** (`models.py to_json`).
-- `instance/userdata.db` with real accounts is **committed to git**.
-- `CORS(app)` open to all origins; `debug=True`; no `SECRET_KEY`, no sessions/tokens —
-  "auth" is purely trust-the-client (`/logout` acts on any user id it's handed).
-- Root `requirements.txt` is UTF-16 (PowerShell artifact); regenerate as UTF-8.
-
-None of this matters for a localhost hobby project *today*, but it should be on the list
-before anything goes online.
-
-## Databases & state at a glance
-
-| Store | Where | Contents | Survives restart? |
-|---|---|---|---|
-| SQLite `userdata.db` | `main_server/instance/` | `user`, `custom_games` tables | yes (and it's in git — remove it) |
-| `_active_games` dict | `war_game.py` | War games in progress | no |
-| `_rooms` dict | `rooms.py` | Era 2 rooms | no |
-| boardgame.io matches | `card_server` (in-memory default) | Mighty matches | no |
+| `/login`, `/signup`, `/logout` | Ported to `server.js` + `users.js` (same request/response shapes — the frontend needed only a port change) |
+| `models.py` `User` table | Migrated to `data/users.db` with hashed passwords |
+| `war_game.py` (server-side War vs bot) | Superseded — War is now the boardgame.io game in [shared/games/War.js](../shared/games/War.js), playable from the lobby |
+| `rooms.py`, `playground.py` | Deleted — their only callers were the deleted Era 2 client |
+| `shared_handlers/` package | Deleted — never imported or registered by anything |
+| `PATCH /update_user`, `DELETE /delete_user` | Dropped — no callers. Re-add on the Node side if account management UI ever appears |
+| root `requirements.txt`, `.venv` | Deleted — there is no Python in the project anymore |

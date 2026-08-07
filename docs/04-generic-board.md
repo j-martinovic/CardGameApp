@@ -1,25 +1,24 @@
-# The Board Engine — `GenericBoard` (lives in `game-client/`, used by `frontend/`)
+# The Board Engine — `GenericBoard` (`frontend/src/engine/`)
 
-The Mighty table UI is not rendered by code in `frontend/`. It's rendered by an Era 2
-component library that survived the pivot:
-[game-client/src/components/GenericBoard.jsx](../game-client/src/components/GenericBoard.jsx).
+Both game boards render through one component library — originally built in the Era 2
+`game-client`, now living at
+[frontend/src/engine/components/GenericBoard.jsx](../frontend/src/engine/components/GenericBoard.jsx).
 
 `frontend/src/board/MightyBoard.jsx` is just:
 
 ```jsx
-import GenericBoard from '../../../game-client/src/components/GenericBoard';
+import GenericBoard from '../engine/components/GenericBoard';
 export default function MightyBoard(props) {
   return <GenericBoard {...props} config={MightyBoardConfig} />;
 }
 ```
 
-This is the **only** reason `game-client/` must stay in the repo today. The refactor plan
-([07-refactor-plan.md](07-refactor-plan.md)) moves this engine into `frontend/` and deletes
-the rest of `game-client/`.
+([board/war/WarBoard.jsx](../frontend/src/board/war/WarBoard.jsx) is the same 7-line shape
+with `WarBoardConfig`.)
 
-## Exactly which `game-client` files are live
+## What's in the engine
 
-Computed by following every import from the frontend entry point:
+Everything under `frontend/src/engine/`:
 
 - `components/GenericBoard.jsx` (+ `.css`) — the hub
 - `components/ZoneLayout.jsx` — maps zone configs to primitives, wires drag/drop
@@ -33,8 +32,6 @@ Computed by following every import from the frontend entry point:
 - `hooks/useBoardEventHandlers.js`, `hooks/useCardInteraction.js`
 - `shared_handlers/`: `useCardInteractions`, `useBetting`, `useTurnRound`,
   `usePlayerActions`, `useSocial`, `useScoring`, and `config.js` (pulled in by `useSocial`)
-
-Everything else in `game-client/` is dead — see [06-dead-code.md](06-dead-code.md).
 
 ## How GenericBoard works
 
@@ -52,16 +49,17 @@ plus a per-game `config` object. The config contract (as used by
 | `useDefaultInteractiveZones` | `true` = auto-build a generic seat layout instead of using `interactiveZones` |
 | `actions` | Buttons for the ActionZone |
 
-Two render paths ([GenericBoard.jsx:288-352](../game-client/src/components/GenericBoard.jsx#L288-L352)):
+Two render paths ([GenericBoard.jsx:288-352](../frontend/src/engine/components/GenericBoard.jsx#L288-L352)):
 
-1. **Interactive path** (used by Mighty): `ZoneLayout` renders rows of primitives
-   (Hand/Pile/PlayZone/Deck) and wires clicks + HTML5 drag/drop through
+1. **Interactive path** (used by both Mighty and War): `ZoneLayout` renders rows of
+   primitives (Hand/Pile/PlayZone/Deck) and wires clicks + HTML5 drag/drop through
    `useBoardEventHandlers`.
-2. **Legacy named-zone path** (used by Era 2 War/Go Fish): the 10 zone components driven by
-   config field names.
+2. **Legacy named-zone path**: the 10 zone components driven by config field names — now
+   only reachable via sandbox mode, a candidate for deletion in the engine-simplification
+   step.
 
-There is also a **sandbox mode** (zone toggles + "Copy Config" JSON exporter) used by the
-dead playground — harmless, deletable later.
+There is also a **sandbox mode** (zone toggles + "Copy Config" JSON exporter) that was used
+by the deleted playground — harmless, deletable later.
 
 ## The move-dispatch pipeline — and why playing a card does nothing
 
@@ -79,14 +77,14 @@ primitive (Hand/PlayZone)
 
 **Three different naming conventions collide**:
 
-1. [useBoardEventHandlers.js:16-22](../game-client/src/hooks/useBoardEventHandlers.js#L16-L22)
+1. [useBoardEventHandlers.js:16-22](../frontend/src/engine/hooks/useBoardEventHandlers.js#L16-L22)
    `DEFAULT_MOVE_MAP` maps `'hand→play'` to `'PlayCard'` (capitalized — recently edited).
-2. GenericBoard's handler bag ([GenericBoard.jsx:123-164](../game-client/src/components/GenericBoard.jsx#L123-L164))
+2. GenericBoard's handler bag ([GenericBoard.jsx:123-164](../frontend/src/engine/components/GenericBoard.jsx#L123-L164))
    uses camelCase keys (`playCard`), so `handlers['PlayCard']` is `undefined` and
    `dispatchMove` returns without doing anything
-   ([useBoardEventHandlers.js:36-38](../game-client/src/hooks/useBoardEventHandlers.js#L36-L38)).
+   ([useBoardEventHandlers.js:36-38](../frontend/src/engine/hooks/useBoardEventHandlers.js#L36-L38)).
 3. Even the camelCase handlers only call **snake_case** boardgame.io moves optionally —
-   `moves.play_card?.(...)` ([useCardInteractions.js:20](../game-client/src/shared_handlers/useCardInteractions.js#L20)) —
+   `moves.play_card?.(...)` ([useCardInteractions.js:20](../frontend/src/engine/shared_handlers/useCardInteractions.js#L20)) —
    and Mighty's actual moves are `PlayCard`, `MakeBid`, etc. So the entire
    `shared_handlers` layer is a stack of no-ops for Mighty.
 
@@ -111,8 +109,10 @@ moveOverrides: {
 ```
 
 `moveOverrides` entries replace bag entries by key and receive `(moves, G, ...args)`
-([GenericBoard.jsx:167-175](../game-client/src/components/GenericBoard.jsx#L167-L175)), so
-this is the supported hook for exactly this purpose. Era 2's War config did the same thing.
+([GenericBoard.jsx:167-175](../frontend/src/engine/components/GenericBoard.jsx#L167-L175)), so
+this is the supported hook for exactly this purpose. The War config
+([board/war/WarBoardConfig.js](../frontend/src/board/war/WarBoardConfig.js)) already does
+exactly this — which is why War is playable and Mighty isn't yet.
 
 Recommendation for the refactor: delete the abstract-handler indirection entirely and have
 `useBoardEventHandlers` dispatch straight from a per-game `moveMap` to `moves[...]`. One
@@ -124,16 +124,14 @@ layer instead of three.
   (boardgame.io 0.50 passes `events` as a separate board prop, not on `ctx`, and GenericBoard
   never receives/forwards it), then falls back to `handlers.endTurn` →
   `moves.end_turn?.()` — which Mighty doesn't define.
-- **Chat 404s**: `useSocial` is live and POSTs to Flask
-  `:5000/shared/chat/*` — but the `shared_handlers` blueprint was never registered in Flask
-  ([05-backend.md](05-backend.md)), so every chat message, emoji, and mute/report/block call
-  returns 404. Either register the blueprint or (simpler) strip `useSocial` wiring when
-  extracting the engine.
+- **Chat goes nowhere**: `useSocial` POSTs to `:5000/shared/chat/*`
+  ([engine/shared_handlers/config.js](../frontend/src/engine/shared_handlers/config.js)) —
+  an endpoint that never existed and whose server (Flask) is now gone entirely, so chat
+  actions fail with a connection error in the console. Strip `useSocial` in the
+  engine-simplification step; chat done right would ride boardgame.io, not REST.
 - Debug `console.log`s left in the hot path: `GenericBoard.jsx:219,223`,
   `useBoardEventHandlers.js:34,54-56`, `ZoneLayout.jsx:73`, `primitives/Hand.jsx:22` — one
   logs the entire transformed `G` on every render.
 - `useBetting`, `useTurnRound`, `usePlayerActions`, `useScoring` are wired into the bag but,
   like `useCardInteractions`, only call snake_case moves no game defines — pure dead weight
-  for Mighty. The remaining 5 shared_handlers hooks (`useLobby`, `useDebug`,
-  `useBridgeSpecific`, `useEuchreSpecific`, `usePokerSpecific`) plus the `index.js` barrel
-  are imported by nothing at all.
+  for Mighty. (The 5 hooks nothing imported at all were deleted in the cleanup.)
