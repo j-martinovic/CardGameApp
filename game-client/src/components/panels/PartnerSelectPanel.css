@@ -1,0 +1,107 @@
+/* ── PartnerSelectPanel ───────────────────────────────────────────────────── */
+
+.psp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.psp-panel {
+  background: #1e4a1e;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 90vw;
+  overflow-x: auto;
+}
+
+.psp-title {
+  color: #ffe066;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Suit rows ────────────────────────────────────────────────────────────── */
+
+.psp-suits {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.psp-suit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.psp-suit-label {
+  font-size: 1.6rem;
+  font-weight: 700;
+  width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.psp-label--red   { color: #c0392b; }
+.psp-label--black { color: #ffffff; }
+
+.psp-cards {
+  display: flex;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+/* ── Card wrapper — in-hand overlay ──────────────────────────────────────── */
+
+.psp-card-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Blue tint + outline signals this card is in the player's hand */
+.psp-card-wrap--in-hand::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius, 8px);
+  outline: 3px solid #4a90d9;
+  background: rgba(74, 144, 217, 0.28);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+
+.psp-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.psp-go-alone-btn {
+  padding: 11px 36px;
+  background: #c0392b;
+  color: #ffffff;
+  border: 1px solid #c0392b;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.12s ease;
+}
+
+.psp-go-alone-btn:hover {
+  filter: brightness(1.18);
+}

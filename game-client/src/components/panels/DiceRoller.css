@@ -1,0 +1,77 @@
+/* ── DiceRoller ───────────────────────────────────────────────────────────── */
+
+.dr-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dr-panel {
+  background: #1e4a1e;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  padding: 40px 56px;
+}
+
+.dr-dice-row {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Die face ─────────────────────────────────────────────────────────────── */
+
+.dr-die-wrap {
+  perspective: 500px;
+}
+
+.dr-die {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.8);
+  border: 1.5px solid #e0e0e0;
+}
+
+/* ── Pip positions (absolute within the die face) ────────────────────────── */
+/*   Die inner area after 13px edge padding (pip center at 13 + 7 = 20px)   */
+
+.dr-pip {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #1a1a1a;
+  border-radius: 50%;
+}
+
+.dr-pip--tl { top: 13px;  left: 13px; }
+.dr-pip--tr { top: 13px;  right: 13px; }
+.dr-pip--ml { top: 50%;   left: 13px;  transform: translateY(-50%); }
+.dr-pip--mc { top: 50%;   left: 50%;   transform: translate(-50%, -50%); }
+.dr-pip--mr { top: 50%;   right: 13px; transform: translateY(-50%); }
+.dr-pip--bl { bottom: 13px; left: 13px; }
+.dr-pip--br { bottom: 13px; right: 13px; }
+
+/* ── Rolling animation ────────────────────────────────────────────────────── */
+
+@keyframes dr-tumble {
+  0%   { transform: rotate(0deg)    scale(1);    opacity: 1; }
+  15%  { transform: rotate(270deg)  scale(1.18); opacity: 0.75; }
+  30%  { transform: rotate(540deg)  scale(0.85); opacity: 1; }
+  50%  { transform: rotate(900deg)  scale(1.12); opacity: 0.7; }
+  70%  { transform: rotate(1170deg) scale(0.9);  opacity: 1; }
+  85%  { transform: rotate(1350deg) scale(1.05); opacity: 0.85; }
+  100% { transform: rotate(1440deg) scale(1);    opacity: 1; }
+}
+
+.dr-die--rolling {
+  animation: dr-tumble 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}

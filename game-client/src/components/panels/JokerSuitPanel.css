@@ -1,0 +1,60 @@
+/* ── JokerSuitPanel ───────────────────────────────────────────────────────── */
+
+.jsp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.jsp-panel {
+  background: #1e4a1e;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  padding: 36px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.jsp-prompt {
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+}
+
+.jsp-suits {
+  display: flex;
+  gap: 18px;
+}
+
+.jsp-suit-btn {
+  width: 68px;
+  height: 68px;
+  background: #ffffff;
+  border: 2px solid #d0d0d0;
+  border-radius: 10px;
+  font-size: 2.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+  line-height: 1;
+}
+
+.jsp-suit-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.75);
+  border-color: #ffe066;
+}
+
+.jsp-suit--red   { color: #c0392b; }
+.jsp-suit--black { color: #1a1a1a; }

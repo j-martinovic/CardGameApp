@@ -1,0 +1,43 @@
+/* ── PanelsDemo — dev-only shell ──────────────────────────────────────────── */
+
+.pd-root {
+  background: #1a3d1a;
+  min-height: 100vh;
+  padding: 40px 32px;
+  font-family: system-ui, sans-serif;
+  color: #ffffff;
+}
+
+.pd-heading {
+  color: #ffe066;
+  font-size: 1.6rem;
+  margin: 0 0 8px;
+}
+
+.pd-sub {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin: 0 0 32px;
+}
+
+.pd-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pd-btn {
+  padding: 10px 22px;
+  background: #2d6e2d;
+  color: #ffe066;
+  border: 1px solid #ffe066;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.12s ease;
+}
+
+.pd-btn:hover {
+  filter: brightness(1.15);
+}

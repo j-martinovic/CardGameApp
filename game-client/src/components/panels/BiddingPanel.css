@@ -1,0 +1,133 @@
+/* ── BiddingPanel ─────────────────────────────────────────────────────────── */
+
+.bp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.bp-panel {
+  background: #1e4a1e;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Bid Grid ─────────────────────────────────────────────────────────────── */
+
+.bp-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--bp-cols, 5), 1fr);
+  gap: 5px;
+}
+
+.bp-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  cursor: pointer;
+  line-height: 1.1;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
+  padding: 0;
+}
+
+.bp-cell:hover:not(.bp-cell--unbiddable) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.65);
+  border-color: #ffe066;
+}
+
+.bp-cell--nt {
+  background: #f8f4e8;
+}
+
+.bp-cell--unbiddable {
+  filter: saturate(0.15);
+  opacity: 0.35;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.bp-cell-level {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.bp-cell-suit {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.bp-suit--red  { color: #c0392b; }
+.bp-suit--black { color: #1a1a1a; }
+
+/* ── Bottom row (wildcards + Pass) ────────────────────────────────────────── */
+
+.bp-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bp-wildcards {
+  display: flex;
+  gap: 8px;
+}
+
+.bp-wc-btn {
+  padding: 9px 20px;
+  background: #4a90d9;
+  color: #ffffff;
+  border: 1px solid #357abd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.bp-wc-btn:hover:not(.bp-wc-btn--disabled) {
+  background: #357abd;
+}
+
+.bp-wc-btn--disabled {
+  opacity: 0.38;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.bp-pass-btn {
+  padding: 10px 30px;
+  background: #2d6e2d;
+  color: #ffe066;
+  border: 2px solid #ffe066;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 200, 80, 0.4);
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.bp-pass-btn:hover {
+  background: #1e5a1e;
+  box-shadow: 0 0 18px rgba(0, 200, 80, 0.75);
+}

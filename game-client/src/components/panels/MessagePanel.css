@@ -1,0 +1,79 @@
+/* ── MessagePanel ─────────────────────────────────────────────────────────── */
+
+.mp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.mp-panel {
+  background: #1e4a1e;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  padding: 36px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+}
+
+.mp-title {
+  color: #ffe066;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.mp-body {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.98rem;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.mp-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.mp-btn {
+  padding: 10px 26px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: filter 0.12s ease;
+}
+
+.mp-btn:hover { filter: brightness(1.14); }
+
+.mp-btn--primary {
+  background: #ffe066;
+  color: #1a1a1a;
+  border-color: #ffe066;
+}
+
+.mp-btn--danger {
+  background: #c0392b;
+  color: #ffffff;
+  border-color: #c0392b;
+}
+
+.mp-btn--secondary {
+  background: #2d6e2d;
+  color: #ffe066;
+  border-color: #ffe066;
+}
